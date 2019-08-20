@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.IdentificationLibraryMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.IdentificationLibrary">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="server_id" jdbcType="INTEGER" property="serverId" />
+    <result column="sip_id" jdbcType="INTEGER" property="sipId" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="identification_type" jdbcType="VARCHAR" property="identificationType" />
+    <result column="people_id" jdbcType="INTEGER" property="peopleId" />
+    <result column="people_kind" jdbcType="INTEGER" property="peopleKind" />
+    <result column="people_name" jdbcType="VARCHAR" property="peopleName" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="image_file" jdbcType="VARCHAR" property="imageFile" />
+    <result column="small_image" jdbcType="VARCHAR" property="smallImage" />
+    <result column="small_url" jdbcType="VARCHAR" property="smallUrl" />
+    <result column="identification_time" jdbcType="TIMESTAMP" property="identificationTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, device_id, server_id, sip_id, device_name, identification_type, people_id, 
+    people_kind, people_name, image_url, image_file, small_image, small_url, identification_time, 
+    status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_identification_library
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_identification_library
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.IdentificationLibrary">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_identification_library (user_id, device_id, server_id, 
+      sip_id, device_name, identification_type, 
+      people_id, people_kind, people_name, 
+      image_url, image_file, small_image, 
+      small_url, identification_time, status, 
+      create_time)
+    values (#{userId,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, 
+      #{sipId,jdbcType=INTEGER}, #{deviceName,jdbcType=VARCHAR}, #{identificationType,jdbcType=VARCHAR}, 
+      #{peopleId,jdbcType=INTEGER}, #{peopleKind,jdbcType=INTEGER}, #{peopleName,jdbcType=VARCHAR}, 
+      #{imageUrl,jdbcType=VARCHAR}, #{imageFile,jdbcType=VARCHAR}, #{smallImage,jdbcType=VARCHAR}, 
+      #{smallUrl,jdbcType=VARCHAR}, #{identificationTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.IdentificationLibrary">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_identification_library
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="serverId != null">
+        server_id,
+      </if>
+      <if test="sipId != null">
+        sip_id,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="identificationType != null">
+        identification_type,
+      </if>
+      <if test="peopleId != null">
+        people_id,
+      </if>
+      <if test="peopleKind != null">
+        people_kind,
+      </if>
+      <if test="peopleName != null">
+        people_name,
+      </if>
+      <if test="imageUrl != null">
+        image_url,
+      </if>
+      <if test="imageFile != null">
+        image_file,
+      </if>
+      <if test="smallImage != null">
+        small_image,
+      </if>
+      <if test="smallUrl != null">
+        small_url,
+      </if>
+      <if test="identificationTime != null">
+        identification_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="serverId != null">
+        #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="sipId != null">
+        #{sipId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationType != null">
+        #{identificationType,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleId != null">
+        #{peopleId,jdbcType=INTEGER},
+      </if>
+      <if test="peopleKind != null">
+        #{peopleKind,jdbcType=INTEGER},
+      </if>
+      <if test="peopleName != null">
+        #{peopleName,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null">
+        #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imageFile != null">
+        #{imageFile,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImage != null">
+        #{smallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="smallUrl != null">
+        #{smallUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationTime != null">
+        #{identificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.IdentificationLibrary">
+    update bh_identification_library
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="serverId != null">
+        server_id = #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="sipId != null">
+        sip_id = #{sipId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceName != null">
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationType != null">
+        identification_type = #{identificationType,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleId != null">
+        people_id = #{peopleId,jdbcType=INTEGER},
+      </if>
+      <if test="peopleKind != null">
+        people_kind = #{peopleKind,jdbcType=INTEGER},
+      </if>
+      <if test="peopleName != null">
+        people_name = #{peopleName,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null">
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imageFile != null">
+        image_file = #{imageFile,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImage != null">
+        small_image = #{smallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="smallUrl != null">
+        small_url = #{smallUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationTime != null">
+        identification_time = #{identificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.IdentificationLibrary">
+    update bh_identification_library
+    set user_id = #{userId,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=INTEGER},
+      server_id = #{serverId,jdbcType=INTEGER},
+      sip_id = #{sipId,jdbcType=INTEGER},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      identification_type = #{identificationType,jdbcType=VARCHAR},
+      people_id = #{peopleId,jdbcType=INTEGER},
+      people_kind = #{peopleKind,jdbcType=INTEGER},
+      people_name = #{peopleName,jdbcType=VARCHAR},
+      image_url = #{imageUrl,jdbcType=VARCHAR},
+      image_file = #{imageFile,jdbcType=VARCHAR},
+      small_image = #{smallImage,jdbcType=VARCHAR},
+      small_url = #{smallUrl,jdbcType=VARCHAR},
+      identification_time = #{identificationTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 添加告警记录 -->
+  <insert id="insertAlarmRecord" parameterType="com.java.model.domain.AlarmRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_alarm_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="peopleId != null">
+        people_id,
+      </if>
+      <if test="peopleKind != null">
+        people_kind,
+      </if>
+      <if test="peopleName != null">
+        people_name,
+      </if>
+      <if test="printscreen != null">
+        printscreen,
+      </if>
+      <if test="imageFile != null">
+        image_file,
+      </if>
+      <if test="smallImage != null">
+        small_image,
+      </if>
+      <if test="smallUrl != null">
+        small_url,
+      </if>
+      <if test="alarmType != null">
+        alarm_type,
+      </if>
+      <if test="alarmDate != null">
+        alarm_date,
+      </if>
+      <if test="alarmTime != null">
+        alarm_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleId != null">
+        #{peopleId,jdbcType=INTEGER},
+      </if>
+      <if test="peopleKind != null">
+        #{peopleKind,jdbcType=INTEGER},
+      </if>
+      <if test="peopleName != null">
+        #{peopleName,jdbcType=VARCHAR},
+      </if>
+      <if test="printscreen != null">
+        #{printscreen,jdbcType=VARCHAR},
+      </if>
+      <if test="imageFile != null">
+        #{imageFile,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImage != null">
+        #{smallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="smallUrl != null">
+        #{smallUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmType != null">
+        #{alarmType,jdbcType=INTEGER},
+      </if>
+      <if test="alarmDate != null">
+        #{alarmDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alarmTime != null">
+        #{alarmTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+
+  <!-- 通过typeCode查询告警类型 -->
+  <resultMap id="BaseResultMap1" type="com.java.model.domain.DictData">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dict_type_id" jdbcType="INTEGER" property="dictTypeId" />
+    <result column="dict_code" jdbcType="VARCHAR" property="dictCode" />
+    <result column="dict_value" jdbcType="VARCHAR" property="dictValue" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <select id="findByTypeCode" resultMap="BaseResultMap1">
+    select
+    dd.id, dict_type_id, dict_code, dict_value, dd.remark
+    from sys_dict_data dd left join sys_dict_type dt on dd.dict_type_id = dt.id where dt.type_code = #{typeCode} order by dd.dict_code
+  </select>
+
+  <!-- 保存推送记录 -->
+  <insert id="savePushRecord" parameterType="com.java.model.domain.PushRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_record (device_id, server_id, identification_type, create_time)
+    values (#{deviceId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{identificationType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <!-- 查找推送记录 -->
+  <select id="findPushRecord" resultType="com.java.model.domain.PushRecord">
+    select id, device_id deviceId, server_id serverId, identification_type identificationType, push_interval pushInterval, create_time createTime
+    from bh_push_record where device_id = #{deviceId, jdbcType=INTEGER} AND server_id = #{serverId, jdbcType=INTEGER}
+  </select>
+  <!-- 删除推送记录 -->
+  <delete id="deletePushRecord" parameterType="java.lang.Integer">
+    delete from bh_push_record where id = #{id, jdbcType=INTEGER}
+  </delete>
+
+
+  <!-- 保存微信openId -->
+  <insert id="savePushWeixin">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_weixin (open_id, create_time)
+      values (#{openId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <!-- 查找微信openId -->
+  <select id="findPushWeixin" resultType="java.lang.String">
+    select open_id openId from bh_push_weixin
+  </select>
+
+  <!-- 解绑openId -->
+  <delete id="unbindOpenId" parameterType="java.lang.String">
+    delete from bh_push_weixin where open_id = #{openId, jdbcType=VARCHAR}
+  </delete>
+
+</mapper>

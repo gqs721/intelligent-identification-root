@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.ResourceMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.Resource">
+    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="uk_name" jdbcType="VARCHAR" property="ukName" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="perms" jdbcType="VARCHAR" property="perms" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_id, parent_id, uk_name, path, perms, type, order_num, delete_flag, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_resource
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_resource
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.Resource">
+    <selectKey keyProperty="pkId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_resource (parent_id, uk_name, path, 
+      perms, type, order_num, 
+      delete_flag, create_time, update_time
+      )
+    values (#{parentId,jdbcType=INTEGER}, #{ukName,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
+      #{perms,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{orderNum,jdbcType=INTEGER}, 
+      #{deleteFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.Resource">
+    <selectKey keyProperty="pkId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="ukName != null">
+        uk_name,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="perms != null">
+        perms,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="orderNum != null">
+        order_num,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="ukName != null">
+        #{ukName,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="perms != null">
+        #{perms,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="orderNum != null">
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.Resource">
+    update sys_resource
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="ukName != null">
+        uk_name = #{ukName,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="perms != null">
+        perms = #{perms,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="orderNum != null">
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.Resource">
+    update sys_resource
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      uk_name = #{ukName,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      perms = #{perms,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      delete_flag = #{deleteFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+
+
+  <!-- 自定义 -->
+  <resultMap id="ResourceResultMap" type="java.util.HashMap">
+    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="uk_name" jdbcType="VARCHAR" property="ukName" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="perms" jdbcType="VARCHAR" property="perms" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <!--<select id="getAll" resultMap="BaseResultMap">-->
+    <!--select * from sys_resource as sr where sr.delete_flag=0-->
+  <!--</select>-->
+  <select id="getResourcesByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select sr.* from sys_resource as sr left join sys_role_resource as srr on sr.pk_id=srr.resource_id where srr.role_id in
+    <foreach collection="list" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+    order by sr.order_num
+  </select>
+
+  <!-- 分页列表 -->
+  <select id="listPage" parameterType="java.util.HashMap" resultMap="ResourceResultMap">
+    select
+    sr.pk_id,
+    sr.parent_id,
+    sr.uk_name,
+    sr.path,
+    sr.perms,
+    sr.type,
+    sr.order_num
+    from sys_resource as sr
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      delete_flag=0
+      <if test="keyword != null and keyword != ''">
+        AND ( sr.uk_name LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+      <if test="type != null">
+        sr.type = #{type}
+      </if>
+    </trim>
+    order by create_time DESC
+  </select>
+  <!-- 数量统计 -->
+  <select id="countPage" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select
+    count(1)
+    from sys_resource as sr
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      delete_flag=0
+      <if test="keyword != null and keyword != ''">
+        AND ( sr.uk_name LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+      <if test="type != null">
+        sr.type = #{type}
+      </if>
+    </trim>
+  </select>
+
+  <select id="getAllMenus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_resource where delete_flag=0 order by order_num
+  </select>
+
+
+</mapper>

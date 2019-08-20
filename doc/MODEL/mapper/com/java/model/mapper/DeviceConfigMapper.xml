@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.DeviceConfigMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.DeviceConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="server_id" jdbcType="INTEGER" property="serverId" />
+    <result column="stream_media_id" jdbcType="INTEGER" property="streamMediaId" />
+    <result column="device_number" jdbcType="VARCHAR" property="deviceNumber" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="device_account" jdbcType="VARCHAR" property="deviceAccount" />
+    <result column="device_password" jdbcType="VARCHAR" property="devicePassword" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="resolution_ratio" jdbcType="VARCHAR" property="resolutionRatio" />
+    <result column="visit_address" jdbcType="VARCHAR" property="visitAddress" />
+    <result column="distinguish_type" jdbcType="VARCHAR" property="distinguishType" />
+    <result column="server_ip" jdbcType="VARCHAR" property="serverIp" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, server_id, stream_media_id, device_number, device_name, device_account, 
+    device_password, manufacturer, resolution_ratio, visit_address, distinguish_type, 
+    server_ip, status, del_status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_device_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_device_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.DeviceConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_device_config (user_id, server_id, stream_media_id, 
+      device_number, device_name, device_account, 
+      device_password, manufacturer, resolution_ratio, 
+      visit_address, distinguish_type, server_ip, 
+      status, del_status, create_time
+      )
+    values (#{userId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{streamMediaId,jdbcType=INTEGER}, 
+      #{deviceNumber,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, #{deviceAccount,jdbcType=VARCHAR}, 
+      #{devicePassword,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, #{resolutionRatio,jdbcType=VARCHAR}, 
+      #{visitAddress,jdbcType=VARCHAR}, #{distinguishType,jdbcType=VARCHAR}, #{serverIp,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.DeviceConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_device_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="serverId != null">
+        server_id,
+      </if>
+      <if test="streamMediaId != null">
+        stream_media_id,
+      </if>
+      <if test="deviceNumber != null">
+        device_number,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="deviceAccount != null">
+        device_account,
+      </if>
+      <if test="devicePassword != null">
+        device_password,
+      </if>
+      <if test="manufacturer != null">
+        manufacturer,
+      </if>
+      <if test="resolutionRatio != null">
+        resolution_ratio,
+      </if>
+      <if test="visitAddress != null">
+        visit_address,
+      </if>
+      <if test="distinguishType != null">
+        distinguish_type,
+      </if>
+      <if test="serverIp != null">
+        server_ip,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="serverId != null">
+        #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="streamMediaId != null">
+        #{streamMediaId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceNumber != null">
+        #{deviceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceAccount != null">
+        #{deviceAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="devicePassword != null">
+        #{devicePassword,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="resolutionRatio != null">
+        #{resolutionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="visitAddress != null">
+        #{visitAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="distinguishType != null">
+        #{distinguishType,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIp != null">
+        #{serverIp,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.DeviceConfig">
+    update bh_device_config
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="serverId != null">
+        server_id = #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="streamMediaId != null">
+        stream_media_id = #{streamMediaId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceNumber != null">
+        device_number = #{deviceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null">
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceAccount != null">
+        device_account = #{deviceAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="devicePassword != null">
+        device_password = #{devicePassword,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="resolutionRatio != null">
+        resolution_ratio = #{resolutionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="visitAddress != null">
+        visit_address = #{visitAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="distinguishType != null">
+        distinguish_type = #{distinguishType,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIp != null">
+        server_ip = #{serverIp,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.DeviceConfig">
+    update bh_device_config
+    set user_id = #{userId,jdbcType=INTEGER},
+      server_id = #{serverId,jdbcType=INTEGER},
+      stream_media_id = #{streamMediaId,jdbcType=INTEGER},
+      device_number = #{deviceNumber,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_account = #{deviceAccount,jdbcType=VARCHAR},
+      device_password = #{devicePassword,jdbcType=VARCHAR},
+      manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      resolution_ratio = #{resolutionRatio,jdbcType=VARCHAR},
+      visit_address = #{visitAddress,jdbcType=VARCHAR},
+      distinguish_type = #{distinguishType,jdbcType=VARCHAR},
+      server_ip = #{serverIp,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

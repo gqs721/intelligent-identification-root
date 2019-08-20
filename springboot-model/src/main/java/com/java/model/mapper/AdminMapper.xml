@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.AdminMapper">
+    <resultMap id="BaseResultMap" type="com.java.model.domain.Admin">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
+        <result column="company_logo" jdbcType="VARCHAR" property="companyLogo" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="contact_way" jdbcType="VARCHAR" property="contactWay" />
+        <result column="authenticator" jdbcType="VARCHAR" property="authenticator" />
+        <result column="salt" jdbcType="VARCHAR" property="salt" />
+        <result column="user_type" jdbcType="INTEGER" property="userType" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, user_name, password, real_name, company_name, business_license,
+    company_logo, email, contact_way, authenticator, salt, user_type, status,
+    del_status, create_time, last_login_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_admin
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_admin
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.java.model.domain.Admin">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_admin (user_name, password,
+        real_name, company_name, business_license,
+        company_logo, email, contact_way,
+        authenticator, salt, user_type,
+        status,
+        del_status, create_time, last_login_time
+        )
+        values (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+        #{realName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{businessLicense,jdbcType=VARCHAR},
+        #{companyLogo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{contactWay,jdbcType=VARCHAR},
+        #{authenticator,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastLoginTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.java.model.domain.Admin">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_admin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="companyName != null">
+                company_name,
+            </if>
+            <if test="businessLicense != null">
+                business_license,
+            </if>
+            <if test="companyLogo != null">
+                company_logo,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="contactWay != null">
+                contact_way,
+            </if>
+            <if test="authenticator != null">
+                authenticator,
+            </if>
+            <if test="salt != null">
+                salt,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="delStatus != null">
+                del_status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null">
+                #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicense != null">
+                #{businessLicense,jdbcType=VARCHAR},
+            </if>
+            <if test="companyLogo != null">
+                #{companyLogo,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="contactWay != null">
+                #{contactWay,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticator != null">
+                #{authenticator,jdbcType=VARCHAR},
+            </if>
+            <if test="salt != null">
+                #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delStatus != null">
+                #{delStatus,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastLoginTime != null">
+                #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.Admin">
+        update sys_admin
+        <set>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null">
+                company_name = #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicense != null">
+                business_license = #{businessLicense,jdbcType=VARCHAR},
+            </if>
+            <if test="companyLogo != null">
+                company_logo = #{companyLogo,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="contactWay != null">
+                contact_way = #{contactWay,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticator != null">
+                authenticator = #{authenticator,jdbcType=VARCHAR},
+            </if>
+            <if test="salt != null">
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delStatus != null">
+                del_status = #{delStatus,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.java.model.domain.Admin">
+    update sys_admin
+    set user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      business_license = #{businessLicense,jdbcType=VARCHAR},
+      company_logo = #{companyLogo,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      contact_way = #{contactWay,jdbcType=VARCHAR},
+      authenticator = #{authenticator,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+    <!-- ********* 自定义 *********** -->
+    <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        sa.id,
+        sa.user_name,
+        sa.real_name,
+        sa.company_name,
+        sa.business_license,
+        sa.company_logo,
+        sa.email,
+        sa.contact_way,
+        sa.authenticator,
+        sa.salt,
+        sa.user_type,
+        sa.status,
+        sa.del_status,
+        sa.create_time,
+        sa.last_login_time
+        from sys_admin as sa where email = #{email}
+    </select>
+    <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        sa.id,
+        sa.user_name,
+        sa.real_name,
+        sa.company_name,
+        sa.business_license,
+        sa.company_logo,
+        sa.email,
+        sa.contact_way,
+        sa.authenticator,
+        sa.salt,
+        sa.user_type,
+        sa.status,
+        sa.del_status,
+        sa.create_time,
+        sa.last_login_time
+        from sys_admin as sa where user_name = #{userName}
+    </select>
+
+    <select id="getByAuthenticatorUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from sys_admin where user_name=#{userName} and del_status=0;
+    </select>
+
+    <!-- 管理员 -->
+    <resultMap id="AdminResultMap" type="java.util.HashMap">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
+        <result column="company_logo" jdbcType="VARCHAR" property="companyLogo" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="contact_way" jdbcType="VARCHAR" property="contactWay" />
+        <result column="authenticator" jdbcType="VARCHAR" property="authenticator" />
+        <result column="salt" jdbcType="VARCHAR" property="salt" />
+        <result column="user_type" jdbcType="INTEGER" property="userType" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+
+        <collection property="roles" javaType="ArrayList" column="{adminId=id}"
+                    select="getAdminRoles">
+        </collection>
+    </resultMap>
+
+    <!-- 角色 -->
+    <resultMap id="RoleResultMap" type="java.util.HashMap">
+        <id column="pk_id" property="roleId"/>
+        <result column="uk_name" property="ukName"/>
+    </resultMap>
+
+    <!-- 获取管理员角色列表 -->
+    <select id="getAdminRoles" resultMap="RoleResultMap">
+      SELECT
+        sr.`pk_id`,
+        sr.`uk_name`
+      FROM
+        sys_admin_role AS sar
+        LEFT JOIN sys_role AS sr
+          ON sar.`role_id` = sr.`pk_id`
+      WHERE sar.`amdin_id` = #{adminId}
+    </select>
+
+    <!-- 获取管理员信息 -->
+    <select id="getAdminByUserName" parameterType="java.lang.String" resultMap="AdminResultMap">
+        select
+        sa.id,
+        sa.user_name,
+        sa.real_name,
+        sa.company_name,
+        sa.business_license,
+        sa.company_logo,
+        sa.email,
+        sa.contact_way,
+        sa.authenticator,
+        sa.salt,
+        sa.user_type,
+        sa.status,
+        sa.del_status,
+        sa.create_time,
+        sa.last_login_time
+        from sys_admin as sa
+        where sa.user_name=#{userName}
+    </select>
+
+    <!-- 批量删除 逻辑删除-->
+    <update id="deleteBatch" parameterType="java.lang.Integer">
+        update sys_admin
+        set del_status=1
+        where id in
+        <foreach collection="array" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!-- 数据列表 -->
+    <select id="listPage" parameterType="java.util.HashMap" resultMap="AdminResultMap">
+        select
+        sa.id,
+        sa.user_name,
+        sa.real_name,
+        sa.company_name,
+        sa.business_license,
+        sa.company_logo,
+        sa.email,
+        sa.contact_way,
+        sa.user_type,
+        sa.status,
+        sa.del_status,
+        sa.create_time,
+        sa.last_login_time
+        from sys_admin as sa
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            sa.del_status=0 AND sa.user_type=2
+            <if test="userType != 0">
+                AND sa.user_type = #{userType}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND ( sa.contact_way LIKE CONCAT('%', #{keyword}, '%') or
+                sa.real_name LIKE CONCAT('%', #{keyword}, '%') or
+                sa.user_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </trim>
+        order by sa.status
+        <if test="pageNum != null and pageSize != null">
+            LIMIT #{pageNum},#{pageSize}
+        </if>
+    </select>
+
+    <!-- 分页数量统计 -->
+    <select id="countPage" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select
+        count(1)
+        from sys_admin as sa
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            sa.del_status=0 AND sa.user_type=2
+            <if test="userType != 0">
+                AND sa.user_type = #{userType}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND ( sa.contact_way LIKE CONCAT('%', #{keyword}, '%') or
+                sa.real_name LIKE CONCAT('%', #{keyword}, '%') or
+                sa.user_name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </trim>
+    </select>
+
+    <select id="findAllUser" resultMap="AdminResultMap">
+    select
+    sa.id,
+    sa.user_name,
+    sa.company_name,
+    sa.user_type,
+    sa.status
+    from sys_admin as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+        sa.del_status=0 AND sa.user_type = 2
+    </trim>
+    order by sa.create_time DESC
+</select>
+
+</mapper>

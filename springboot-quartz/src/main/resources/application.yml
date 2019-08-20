@@ -1,0 +1,4 @@
+spring:
+    profiles:
+      ## profiles里配置的参数名称
+      active: @activatedProperties@

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.ServerConfigMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.ServerConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="server_number" jdbcType="VARCHAR" property="serverNumber" />
+    <result column="server_ip" jdbcType="VARCHAR" property="serverIp" />
+    <result column="server_port" jdbcType="INTEGER" property="serverPort" />
+    <result column="server_account" jdbcType="VARCHAR" property="serverAccount" />
+    <result column="server_password" jdbcType="VARCHAR" property="serverPassword" />
+    <result column="identification_type" jdbcType="VARCHAR" property="identificationType" />
+    <result column="identify_the_imlet" jdbcType="VARCHAR" property="identifyTheImlet" />
+    <result column="create_user_type" jdbcType="INTEGER" property="createUserType" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, company_name, server_number, server_ip, server_port, server_account, server_password,
+    identification_type, identify_the_imlet, create_user_type, status, del_status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_server_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 自定义 -->
+  <select id="findByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_server_config
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_server_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.ServerConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_server_config (user_id, company_name, server_number, 
+      server_ip, server_port, server_account, server_password,
+      identification_type, identify_the_imlet, create_user_type, 
+      status, del_status, create_time
+      )
+    values (#{userId,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{serverNumber,jdbcType=VARCHAR}, 
+      #{serverIp,jdbcType=VARCHAR}, #{serverPort,jdbcType=INTEGER}, #{serverAccount,jdbcType=VARCHAR}, #{serverPassword,jdbcType=VARCHAR},
+      #{identificationType,jdbcType=VARCHAR}, #{identifyTheImlet,jdbcType=VARCHAR}, #{createUserType,jdbcType=INTEGER},
+      #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.ServerConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_server_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="serverNumber != null">
+        server_number,
+      </if>
+      <if test="serverIp != null">
+        server_ip,
+      </if>
+      <if test="serverPort != null">
+        server_port,
+      </if>
+      <if test="serverAccount != null">
+        server_account,
+      </if>
+      <if test="serverPassword != null">
+        server_password,
+      </if>
+      <if test="identificationType != null">
+        identification_type,
+      </if>
+      <if test="identifyTheImlet != null">
+        identify_the_imlet,
+      </if>
+      <if test="createUserType != null">
+        create_user_type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="serverNumber != null">
+        #{serverNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIp != null">
+        #{serverIp,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPort != null">
+        #{serverPort,jdbcType=INTEGER},
+      </if>
+      <if test="serverAccount != null">
+        #{serverAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPassword != null">
+        #{serverPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationType != null">
+        #{identificationType,jdbcType=VARCHAR},
+      </if>
+      <if test="identifyTheImlet != null">
+        #{identifyTheImlet,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserType != null">
+        #{createUserType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.ServerConfig">
+    update bh_server_config
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="serverNumber != null">
+        server_number = #{serverNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIp != null">
+        server_ip = #{serverIp,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPort != null">
+        server_port = #{serverPort,jdbcType=INTEGER},
+      </if>
+      <if test="serverAccount != null">
+        server_account = #{serverAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPassword != null">
+        server_password = #{serverPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationType != null">
+        identification_type = #{identificationType,jdbcType=VARCHAR},
+      </if>
+      <if test="identifyTheImlet != null">
+        identify_the_imlet = #{identifyTheImlet,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserType != null">
+        create_user_type = #{createUserType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.ServerConfig">
+    update bh_server_config
+    set user_id = #{userId,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      server_number = #{serverNumber,jdbcType=VARCHAR},
+      server_ip = #{serverIp,jdbcType=VARCHAR},
+      server_port = #{serverPort,jdbcType=INTEGER},
+      server_account = #{serverAccount,jdbcType=VARCHAR},
+      server_password = #{serverPassword,jdbcType=VARCHAR},
+      identification_type = #{identificationType,jdbcType=VARCHAR},
+      identify_the_imlet = #{identifyTheImlet,jdbcType=VARCHAR},
+      create_user_type = #{createUserType,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- ********* 自定义 *********** -->
+  <resultMap id="ServerResultMap" type="java.util.HashMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="server_number" jdbcType="VARCHAR" property="serverNumber" />
+    <result column="server_ip" jdbcType="VARCHAR" property="serverIp" />
+    <result column="server_port" jdbcType="INTEGER" property="serverPort" />
+    <result column="server_account" jdbcType="VARCHAR" property="serverAccount" />
+    <result column="server_password" jdbcType="VARCHAR" property="serverPassword" />
+    <result column="identification_type" jdbcType="VARCHAR" property="identificationType" />
+    <result column="identify_the_imlet" jdbcType="VARCHAR" property="identifyTheImlet" />
+    <result column="create_user_type" jdbcType="INTEGER" property="createUserType" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <!-- 批量删除 逻辑删除-->
+  <update id="deleteBatch" parameterType="java.lang.Integer">
+    update bh_server_config
+    set del_status=1
+    where id in
+    <foreach collection="array" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <!-- 数据列表 -->
+  <select id="listPage" parameterType="java.util.HashMap" resultMap="ServerResultMap">
+    select
+    sa.id,
+    sa.user_id,
+    sa.company_name,
+    sa.server_number,
+    sa.server_ip,
+    sa.server_port,
+    sa.server_account,
+    sa.server_password,
+    sa.identification_type,
+    sa.identify_the_imlet,
+    sa.create_user_type,
+    sa.status,
+    sa.del_status,
+    sa.create_time
+    from bh_server_config as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.user_id = #{userId}
+      <if test="keyword != null and keyword != ''">
+        AND sa.server_number = #{keyword}
+      </if>
+    </trim>
+    order by sa.create_time DESC
+    <if test="pageNum != null and pageSize != null">
+      LIMIT #{pageNum},#{pageSize}
+    </if>
+  </select>
+
+  <!-- 分页数量统计 -->
+  <select id="countPage" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select
+    count(1)
+    from bh_server_config as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.user_id = #{userId}
+      <if test="keyword != null and keyword != ''">
+        AND sa.server_number = #{keyword}
+      </if>
+    </trim>
+  </select>
+
+  <select id="findByServerIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_server_config
+    where id in
+    <foreach collection="serverIds" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </select>
+</mapper>

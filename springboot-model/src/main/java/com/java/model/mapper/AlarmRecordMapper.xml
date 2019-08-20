@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.AlarmRecordMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.AlarmRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="people_id" jdbcType="INTEGER" property="peopleId" />
+    <result column="people_kind" jdbcType="INTEGER" property="peopleKind" />
+    <result column="people_name" jdbcType="VARCHAR" property="peopleName" />
+    <result column="printscreen" jdbcType="VARCHAR" property="printscreen" />
+    <result column="image_file" jdbcType="VARCHAR" property="imageFile" />
+    <result column="small_image" jdbcType="VARCHAR" property="smallImage" />
+    <result column="small_url" jdbcType="VARCHAR" property="smallUrl" />
+    <result column="alarm_type" jdbcType="INTEGER" property="alarmType" />
+    <result column="alarm_date" jdbcType="TIMESTAMP" property="alarmDate" />
+    <result column="alarm_time" jdbcType="VARCHAR" property="alarmTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, device_id, device_name, people_id, people_kind, people_name, printscreen, image_file, small_image, small_url, alarm_type, alarm_date, alarm_time,
+    status, del_status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_alarm_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_alarm_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.AlarmRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_alarm_record (user_id, device_id, device_name, people_id, people_kind, people_name,
+      printscreen, image_file, small_image, small_url, alarm_type, alarm_date,
+      alarm_time, status, del_status, 
+      create_time)
+    values (#{userId,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{deviceName,jdbcType=VARCHAR}, #{peopleId,jdbcType=INTEGER}, #{peopleKind,jdbcType=INTEGER}, #{peopleName,jdbcType=VARCHAR},
+    #{printscreen,jdbcType=VARCHAR}, #{imageFile,jdbcType=VARCHAR}, #{smallImage,jdbcType=VARCHAR}, #{smallUrl,jdbcType=VARCHAR}, #{alarmType,jdbcType=INTEGER}, #{alarmDate,jdbcType=TIMESTAMP},
+      #{alarmTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.AlarmRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_alarm_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="peopleId != null">
+        people_id,
+      </if>
+      <if test="peopleKind != null">
+        people_kind,
+      </if>
+      <if test="peopleName != null">
+        people_name,
+      </if>
+      <if test="printscreen != null">
+        printscreen,
+      </if>
+      <if test="imageFile != null">
+        image_file,
+      </if>
+      <if test="smallImage != null">
+        small_image,
+      </if>
+      <if test="smallUrl != null">
+        small_url,
+      </if>
+      <if test="alarmType != null">
+        alarm_type,
+      </if>
+      <if test="alarmDate != null">
+        alarm_date,
+      </if>
+      <if test="alarmTime != null">
+        alarm_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleId != null">
+        #{peopleId,jdbcType=INTEGER},
+      </if>
+      <if test="peopleKind != null">
+        #{peopleKind,jdbcType=INTEGER},
+      </if>
+      <if test="peopleName != null">
+        #{peopleName,jdbcType=VARCHAR},
+      </if>
+      <if test="printscreen != null">
+        #{printscreen,jdbcType=VARCHAR},
+      </if>
+      <if test="imageFile != null">
+        #{imageFile,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImage != null">
+        #{smallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="smallUrl != null">
+        #{smallUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmType != null">
+        #{alarmType,jdbcType=INTEGER},
+      </if>
+      <if test="alarmDate != null">
+        #{alarmDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alarmTime != null">
+        #{alarmTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.AlarmRecord">
+    update bh_alarm_record
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceName != null">
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleId != null">
+        people_id = #{people_id,jdbcType=INTEGER},
+      </if>
+      <if test="peopleKind != null">
+        people_kind = #{peopleKind,jdbcType=INTEGER},
+      </if>
+      <if test="peopleName != null">
+        people_name = #{peopleName,jdbcType=VARCHAR},
+      </if>
+      <if test="printscreen != null">
+        printscreen = #{printscreen,jdbcType=VARCHAR},
+      </if>
+      <if test="imageFile != null">
+        image_file = #{imageFile,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImage != null">
+        small_image = #{smallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="smallUrl != null">
+        small_url = #{smallUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmType != null">
+        alarm_type = #{alarmType,jdbcType=INTEGER},
+      </if>
+      <if test="alarmDate != null">
+        alarm_date = #{alarmDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="alarmTime != null">
+        alarm_time = #{alarmTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.AlarmRecord">
+    update bh_alarm_record
+    set user_id = #{userId,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=INTEGER},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      people_id = #{people_id,jdbcType=INTEGER},
+      people_kind = #{peopleKind,jdbcType=INTEGER},
+      people_name = #{peopleName,jdbcType=VARCHAR},
+      printscreen = #{printscreen,jdbcType=VARCHAR},
+      image_file = #{imageFile,jdbcType=VARCHAR},
+      small_image = #{smallImage,jdbcType=VARCHAR},
+      small_url = #{smallUrl,jdbcType=VARCHAR},
+      alarm_type = #{alarmType,jdbcType=INTEGER},
+      alarm_date = #{alarmDate,jdbcType=TIMESTAMP},
+      alarm_time = #{alarmTime,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- ********* 自定义 *********** -->
+  <!-- 告警记录 -->
+  <resultMap id="AlarmRecordResultMap" type="java.util.HashMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="people_id" jdbcType="INTEGER" property="peopleId" />
+    <result column="people_kind" jdbcType="INTEGER" property="peopleKind" />
+    <result column="people_name" jdbcType="VARCHAR" property="peopleName" />
+    <result column="printscreen" jdbcType="VARCHAR" property="printscreen" />
+    <result column="image_file" jdbcType="VARCHAR" property="imageFile" />
+    <result column="small_image" jdbcType="VARCHAR" property="smallImage" />
+    <result column="small_url" jdbcType="VARCHAR" property="smallUrl" />
+    <result column="alarm_type" jdbcType="INTEGER" property="alarmType" />
+    <result column="alarm_date" jdbcType="TIMESTAMP" property="alarmDate" />
+    <result column="alarm_time" jdbcType="VARCHAR" property="alarmTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <!-- 批量删除 逻辑删除-->
+  <update id="deleteBatch" parameterType="java.lang.Integer">
+    update bh_alarm_record
+    set del_status=1
+    where id in
+    <foreach collection="array" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <!-- 数据列表 -->
+  <select id="listPage" parameterType="java.util.HashMap" resultMap="AlarmRecordResultMap">
+    select
+    sa.id,
+    sa.user_id,
+    sa.device_id,
+    sa.people_id,
+    sa.people_kind,
+    sa.device_name,
+    sa.people_name,
+    sa.printscreen,
+    sa.image_file,
+    sa.small_image,
+    sa.small_url,
+    sa.alarm_type,
+    sa.alarm_date,
+    sa.alarm_time,
+    sa.create_time
+    from bh_alarm_record as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.user_id = #{userId, jdbcType=INTEGER}
+      <if test="alarmType != null and alarmType != '' and alarmType != 0">
+        AND sa.alarm_type = #{alarmType, jdbcType=INTEGER}
+      </if>
+      <if test="deviceId != null and deviceId != ''">
+        AND sa.device_id = #{deviceId, jdbcType=INTEGER}
+      </if>
+      <if test="beginDate != null and beginDate != ''">
+        AND sa.alarm_date >= #{beginDate,jdbcType=VARCHAR}
+      </if>
+      <if test="endDate != null and endDate != ''">
+        <![CDATA[ AND sa.alarm_date <= concat(#{endDate,jdbcType=VARCHAR},' 23:59:59') ]]>
+      </if>
+    </trim>
+    order by create_time DESC
+    <if test="pageNum != null and pageSize != null">
+      LIMIT #{pageNum},#{pageSize}
+    </if>
+  </select>
+
+  <!-- 分页数量统计 -->
+  <select id="countPage" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select
+    count(1)
+    from bh_alarm_record as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.user_id = #{userId, jdbcType=INTEGER}
+      <if test="alarmType != null and alarmType != '' and alarmType != 0">
+        AND sa.alarm_type = #{alarmType, jdbcType=INTEGER}
+      </if>
+      <if test="deviceId != null and deviceId != ''">
+        AND sa.device_id = #{deviceId, jdbcType=INTEGER}
+      </if>
+      <if test="beginDate != null and beginDate != ''">
+        AND sa.alarm_date >= #{beginDate,jdbcType=VARCHAR}
+      </if>
+      <if test="endDate != null and endDate != ''">
+        <![CDATA[ AND sa.alarm_date <= concat(#{endDate,jdbcType=VARCHAR},' 23:59:59') ]]>
+      </if>
+    </trim>
+  </select>
+
+  <!-- 统计告警类型近几天的数据，单类型查询 -->
+  <select id="alarmTypeStatistical" resultType="java.util.Map">
+    select distinct(DATE_FORMAT(sa.alarm_date,'%Y-%m-%d')) month, count(*) count
+    from bh_alarm_record sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status = 0 AND alarm_type = #{alarmType,jdbcType=INTEGER}
+      <![CDATA[ AND DATE_SUB(CURDATE(), INTERVAL #{day,jdbcType=INTEGER} DAY) <= date(sa.alarm_date)]]>
+      group by month
+    </trim>
+  </select>
+
+  <!-- 当天告警类型的统计 -->
+  <select id="nowAlarmTypeStatistical" resultType="java.util.Map">
+    select alarm_type AS alarmType, count(*) AS count from bh_alarm_record where date(alarm_date) = curdate() group by alarm_type
+  </select>
+
+  <!-- 当天所有的告警数量 -->
+  <select id="nowAlarmTypeCount" resultType="java.lang.Integer">
+    select count(*) from bh_alarm_record where date(alarm_date) = curdate()
+  </select>
+
+  <!-- 拉流图片处理所需要的方法 start -->
+  <!-- 通过typeCode查询告警类型 -->
+  <resultMap id="BaseResultMap1" type="com.java.model.domain.DictData">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dict_type_id" jdbcType="INTEGER" property="dictTypeId" />
+    <result column="dict_code" jdbcType="VARCHAR" property="dictCode" />
+    <result column="dict_value" jdbcType="VARCHAR" property="dictValue" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <select id="findByTypeCode" resultMap="BaseResultMap1">
+    select
+    dd.id, dict_type_id, dict_code, dict_value, dd.remark
+    from sys_dict_data dd left join sys_dict_type dt on dd.dict_type_id = dt.id where dt.type_code = #{typeCode} order by dd.dict_code
+  </select>
+
+  <!-- 保存推送记录 -->
+  <insert id="savePushRecord" parameterType="com.java.model.domain.PushRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_record (device_id, server_id, identification_type, create_time)
+    values (#{deviceId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{identificationType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <!-- 查找推送记录 -->
+  <select id="findPushRecord" resultType="com.java.model.domain.PushRecord">
+    select id, device_id deviceId, server_id serverId, identification_type identificationType, push_interval pushInterval, create_time createTime
+    from bh_push_record where device_id = #{deviceId, jdbcType=INTEGER} AND server_id = #{serverId, jdbcType=INTEGER}
+  </select>
+  <!-- 删除推送记录 -->
+  <delete id="deletePushRecord" parameterType="java.lang.Integer">
+    delete from bh_push_record where id = #{id, jdbcType=INTEGER}
+  </delete>
+
+  <!-- 保存微信openId -->
+  <insert id="savePushWeixin">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_weixin (open_id, create_time)
+    values (#{openId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <!-- 查找微信openId -->
+  <select id="findPushWeixin" resultType="java.lang.String">
+    select open_id openId from bh_push_weixin
+  </select>
+  <!-- 解绑openId -->
+  <delete id="unbindOpenId" parameterType="java.lang.String">
+    delete from bh_push_weixin where open_id = #{openId, jdbcType=VARCHAR}
+  </delete>
+  <!-- 拉流图片处理所需要的方法 end -->
+
+</mapper>

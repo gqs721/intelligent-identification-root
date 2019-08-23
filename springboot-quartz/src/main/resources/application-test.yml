@@ -56,3 +56,5 @@ config:
   push_weixin_url: http://dc.xmbhzt.com
   # 人脸识别类型，0:陌生人，1:白名单，2：黑名单
   face_kind: 2
+  # 是否推送消息到微信公众号
+  send_weixin_msg: false

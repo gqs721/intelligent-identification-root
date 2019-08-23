@@ -124,6 +124,7 @@ public class OpencvUtil {
     public void executeJavacv(JSONObject json, String rtspPath, DeviceConfig dc, List<ServerConfig> scList, AlarmRecordMapper alarmRecordMapper) {
         FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(rtspPath);
         grabber.setOption("rtsp_transport","tcp");
+//        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber("D:\\JAVA\\tomcat-8.5.43\\webapps\\video\\TopEyeVideo_20190626113520.mp4");
 
         try {
             CollectJob.deviceList.add(dc.getDeviceNumber());
@@ -147,6 +148,7 @@ public class OpencvUtil {
             Frame frame = null;
             int i = 0;
             while (grabber != null && (frame = grabber.grabFrame()) != null) {
+//                Thread.sleep(13);
                 // 每隔多少帧进行重新拉流，1s是25-30帧
                 if(i != 0 && (i % reloadRtsp) == 0){
                     System.out.println("=====================重新拉流:："+rtspPath+"======================");
@@ -441,7 +443,9 @@ public class OpencvUtil {
         // 通过websocket推送告警记录
         pushWebSocket(arList, dc.getUserId());
         // 通过微信推送告警记录
-        pushWeixin(arList, alarmRecordMapper, json.getString("pushWeixinUrl"));
+        if(json.getBoolean("sendWeixinMsg")) {
+            pushWeixin(arList, alarmRecordMapper, json.getString("pushWeixinUrl"));
+        }
     }
 
     // 推送消息到webSocket
@@ -499,8 +503,7 @@ public class OpencvUtil {
 //                        json.put("content", "你有一个" + json.getString("warn_kind") + "，请点击查看");
                         json.put("url", ar.getPrintscreen());
 
-
-//                        HttpRequestUtils.POST_FORM(pushWeixinUrl + "/wechat/warn", json, "UTF-8");
+                        HttpRequestUtils.POST_FORM(pushWeixinUrl + "/wechat/warn", json, "UTF-8");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

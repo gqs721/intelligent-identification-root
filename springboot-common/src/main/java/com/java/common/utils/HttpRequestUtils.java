@@ -79,6 +79,7 @@ public class HttpRequestUtils {
 			java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) connURL
 					.openConnection();
 			// 设置通用属性
+			httpConn.setConnectTimeout(2000);// 连接超时设置
 			httpConn.setRequestProperty("Accept", "*/*");
 			httpConn.setRequestProperty("Connection", "Keep-Alive");
 			httpConn.setRequestProperty("User-Agent",

@@ -173,6 +173,18 @@ public class DateUtil {
     }
 
     /**
+     * 将日期转换成字符串 yyyy年MM月dd日 HH:mm:ss
+     *
+     * @param date
+     * @return yyyy-MM-dd HH:mm:ss
+     */
+    public static String parseDateYMDStr(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        String now_date = simpleDateFormat.format(date);
+        return now_date;
+    }
+
+    /**
      * 获取当前时间的时分秒
      *
      * @return HH:mm:ss

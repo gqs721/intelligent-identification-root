@@ -24,6 +24,18 @@ public class DeviceServer {
     private int serverId;
 
     /**
+     * 设备类型
+     */
+    @ApiModelProperty(value="设备类型")
+    private int deviceType;
+
+    /**
+     * "删除状态，0：未删除，1：已删除
+     */
+    @ApiModelProperty(value="\"删除状态，0：未删除，1：已删除")
+    private int delStatus;
+
+    /**
      * 创建时间
      */
     @ApiModelProperty(value="创建时间")
@@ -61,6 +73,22 @@ public class DeviceServer {
         this.createTime = createTime;
     }
 
+    public int getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(int deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public int getDelStatus() {
+        return delStatus;
+    }
+
+    public void setDelStatus(int delStatus) {
+        this.delStatus = delStatus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -70,6 +98,8 @@ public class DeviceServer {
         sb.append(", id=").append(id);
         sb.append(", deviceId=").append(deviceId);
         sb.append(", serverId=").append(serverId);
+        sb.append(", deviceType=").append(deviceType);
+        sb.append(", delStatus=").append(delStatus);
         sb.append(", createTime=").append(createTime);
         sb.append("]");
         return sb.toString();

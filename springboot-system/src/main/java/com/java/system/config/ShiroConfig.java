@@ -2,6 +2,7 @@ package com.java.system.config;
 
 import com.java.system.secutity.KickoutSessionControlFilter;
 import com.java.system.secutity.MyShiroRealm;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 
 @Configuration
+@Slf4j
 public class ShiroConfig {
 
     @Value("${spring.redis.host}")
@@ -32,6 +34,12 @@ public class ShiroConfig {
 
     @Value("${spring.redis.password}")
     private String redisPassword;
+
+    @Value("${config.kickout_after}")
+    private boolean kickoutAfter;
+
+    @Value("${config.max_session}")
+    private Integer maxSession;
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
@@ -64,9 +72,16 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/admin/verifyMailCode", "anon");// 验证邮箱验证码
         filterChainDefinitionMap.put("/sys/admin/resetPassword", "anon");// 忘记密码的重置密码
 
-        filterChainDefinitionMap.put("/sys/common/saveWeixinOpenId", "anon");// 保存openId
-        filterChainDefinitionMap.put("/sys/common/unbindOpenId", "anon");// 保存openId
+        filterChainDefinitionMap.put("/sys/common/**", "anon");// 保存openId
+//        filterChainDefinitionMap.put("/sys/common/unbindOpenId", "anon");// 保存openId
 //        filterChainDefinitionMap.put("/druid/**", "anon");
+        // 微信端操作接口开放
+        filterChainDefinitionMap.put("/push/weixin/save", "anon");
+        filterChainDefinitionMap.put("/push/weixin/deleteByOpenId", "anon");
+        filterChainDefinitionMap.put("/push/weixin/update", "anon");
+        filterChainDefinitionMap.put("/push/weixin/selectByOpenId", "anon");
+        filterChainDefinitionMap.put("/push/weixin/wxSetStatus", "anon");
+
         //swagger接口权限 开放
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/webjars/**", "anon");
@@ -75,11 +90,14 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/configuration/security", "anon");
         filterChainDefinitionMap.put("/configuration/ui", "anon");
 
+//        filterChainDefinitionMap.put("/device/group/getAllByUserId", "anon");
+
 //        filterChainDefinitionMap.put("/auth/login", "anon");
 //        filterChainDefinitionMap.put("/auth/logout", "logout");
 //        filterChainDefinitionMap.put("/auth/kickout", "anon");
 
         // 自定义过滤器 对所有请求都进行处理
+        filterChainDefinitionMap.put("/image/**", "anon");
         filterChainDefinitionMap.put("/**", "authc,kickout");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
@@ -105,6 +123,11 @@ public class ShiroConfig {
     @Bean
     public MyShiroRealm myShiroRealm() {
         MyShiroRealm myShiroRealm = new MyShiroRealm();
+
+//        log.info("----------------路径："+System.getProperty("user.dir")+"----------------");
+////        createFile(System.getProperty("user.dir")+"/test_image", "test.txt");
+//
+//        GenerateQRCodeUtil.generateQR("生成成功",System.getProperty("user.dir") + "/test_image");
         return myShiroRealm;
     }
 
@@ -130,7 +153,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(redisHost);
         redisManager.setPort(redisPort);
-        redisManager.setExpire(1800);// 配置缓存过期时间
+//        redisManager.setExpire(1800);// 配置缓存过期时间，不设置默认永久不过期
         redisManager.setTimeout(0);
         redisManager.setPassword(redisPassword);
         return redisManager;
@@ -144,6 +167,20 @@ public class ShiroConfig {
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setSessionDAO(redisSessionDAO());
+
+        //全局会话超时时间（单位毫秒），默认30分钟  暂时设置为10秒钟 用来测试, 设置的最大时间，正负都可以，为负数时表示永不超时。
+        sessionManager.setGlobalSessionTimeout(-1000l);
+        //是否开启删除无效的session对象  默认为true
+//        sessionManager.setDeleteInvalidSessions(true);
+        //是否开启定时调度器进行检测过期session 默认为true, 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话
+//        sessionManager.setSessionValidationSchedulerEnabled(true);
+        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
+        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
+        //暂时设置为 5秒 用来测试
+//        sessionManager.setSessionValidationInterval(5000);
+
+        //取消url 后面的 JSESSIONID
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
         return sessionManager;
     }
 
@@ -168,8 +205,8 @@ public class ShiroConfig {
         KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
         kickoutSessionControlFilter.setCacheManager(cacheManager());
         kickoutSessionControlFilter.setSessionManager(sessionManager());
-        kickoutSessionControlFilter.setKickoutAfter(true); // false踢出之前登录的/true之后登录的用户
-        kickoutSessionControlFilter.setMaxSession(1); // 同一个帐号最大会话数
+        kickoutSessionControlFilter.setKickoutAfter(kickoutAfter); // false踢出之前登录的/true之后登录的用户
+        kickoutSessionControlFilter.setMaxSession(maxSession); // 同一个帐号最大会话数
         kickoutSessionControlFilter.setKickoutUrl("/sys/admin/kickout");
         return kickoutSessionControlFilter;
     }

@@ -3,8 +3,6 @@ package com.java.system.service;
 import com.java.common.result.RestResult;
 import com.java.model.domain.Admin;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +23,6 @@ public interface AdminService {
     /**
      * 退出
      * @param Authorization
-     * @param request
-     * @param response
      * @return
      */
     RestResult logout(String Authorization);
@@ -76,11 +72,12 @@ public interface AdminService {
      * 管理员列表
      * @param keyword
      * @param userType
+     * @param userId
      * @param pageNum
      * @param pageSize
      * @return
      */
-    RestResult listAdmin(String keyword, Integer userType, Integer pageNum, Integer pageSize);
+    RestResult listAdmin(String keyword, Integer userType, Integer userId, Integer pageNum, Integer pageSize);
 
 
     /**
@@ -125,4 +122,11 @@ public interface AdminService {
      * @return
      */
     RestResult findAllUser();
+
+    /**
+     * 通过用户获取用户信息
+     * @param userName
+     * @return
+     */
+    Admin findByUserName(String userName);
 }

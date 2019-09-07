@@ -2,15 +2,13 @@ package com.java.model.domain;
 
 import java.util.Date;
 
-public class PushRecord {
+public class PushConfig {
 
     private Integer id;
 
     private Integer deviceId;
 
     private Integer serverId;
-
-    private Integer identificationType;
 
     private Integer pushInterval;
 
@@ -38,14 +36,6 @@ public class PushRecord {
 
     public void setServerId(Integer serverId) {
         this.serverId = serverId;
-    }
-
-    public Integer getIdentificationType() {
-        return identificationType;
-    }
-
-    public void setIdentificationType(Integer identificationType) {
-        this.identificationType = identificationType;
     }
 
     public Integer getPushInterval() {

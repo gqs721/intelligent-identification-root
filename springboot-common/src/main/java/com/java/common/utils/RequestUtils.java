@@ -1,7 +1,6 @@
 package com.java.common.utils;
 
 import com.java.model.domain.Admin;
-import com.java.model.domain.SysUser;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;

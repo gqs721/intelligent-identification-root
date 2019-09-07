@@ -16,22 +16,6 @@ import com.java.model.domain.Role;
 import com.java.model.domain.RoleResource;
 import com.java.system.redis.JWTRedisDAO;
 import com.java.system.service.RoleService;
-import com.java.common.constants.AdminConstant;
-import com.java.common.enums.ResultCodeEnum;
-import com.java.common.result.PageResult;
-import com.java.common.result.RestResult;
-import com.java.common.result.ResultUtils;
-import com.java.common.utils.CollectionUtils;
-import com.java.common.utils.DateUtil;
-import com.java.model.dao.AdminMapper;
-import com.java.model.dao.AdminRoleMapper;
-import com.java.model.dao.RoleMapper;
-import com.java.model.dao.RoleResourceMapper;
-import com.java.model.domain.Admin;
-import com.java.model.domain.Role;
-import com.java.model.domain.RoleResource;
-import com.java.system.redis.JWTRedisDAO;
-import com.java.system.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,8 +83,7 @@ public class RoleSerivceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public RestResult delete(List<Integer> roleIds) {
         Role role = null;
-        for (Integer roleId:roleIds
-             ) {
+        for (Integer roleId:roleIds) {
             role = roleMapper.selectByPrimaryKey(roleId);
             if (null != role){
                 role.setDeleteFlag(1);
@@ -152,8 +135,7 @@ public class RoleSerivceImpl implements RoleService {
     public RestResult listPage(Map map) {
         List<Map> roles = roleMapper.listPage(map);
         // 格式化时间
-        for (Map role:roles
-                ) {
+        for (Map role:roles) {
             role.put("createTime", DateUtil.parseDate((Date) role.get("createTime")));
         }
         int count = roleMapper.countPage(map);
@@ -162,7 +144,6 @@ public class RoleSerivceImpl implements RoleService {
 
     @Override
     public RestResult getAll() {
-
 
         return ResultUtils.success(roleMapper.getAll());
     }
@@ -176,8 +157,7 @@ public class RoleSerivceImpl implements RoleService {
     // ********* 抽取封装 *****
     
     public void persistenceRoleResource(Set<Integer> menus, Integer roleId, Date currentDate){
-        for (Integer id:menus
-             ) {
+        for (Integer id:menus) {
             RoleResource roleResource = new RoleResource();
             roleResource.setRoleId(roleId);
             roleResource.setResourceId(id);

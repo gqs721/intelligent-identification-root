@@ -5,28 +5,40 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="stream_media_id" jdbcType="INTEGER" property="streamMediaId" />
+    <result column="nvr_id" jdbcType="INTEGER" property="nvrId" />
+    <result column="group_id" jdbcType="INTEGER" property="groupId" />
     <result column="device_number" jdbcType="VARCHAR" property="deviceNumber" />
     <result column="device_channel" jdbcType="VARCHAR" property="deviceChannel" />
     <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
     <result column="device_account" jdbcType="VARCHAR" property="deviceAccount" />
     <result column="device_password" jdbcType="VARCHAR" property="devicePassword" />
     <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />
     <result column="resolution_ratio" jdbcType="VARCHAR" property="resolutionRatio" />
+    <result column="code_rate" jdbcType="INTEGER" property="codeRate" />
     <result column="visit_address" jdbcType="VARCHAR" property="visitAddress" />
+    <result column="visit_port" jdbcType="INTEGER" property="visitPort" />
     <result column="distinguish_type" jdbcType="VARCHAR" property="distinguishType" />
-    <result column="server_ip" jdbcType="VARCHAR" property="serverIp" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="storage_type" jdbcType="INTEGER" property="storageType" />
     <result column="sip_server_ip" jdbcType="VARCHAR" property="sipServerIp" />
+    <result column="nvr_ip" jdbcType="VARCHAR" property="nvrIp" />
+    <result column="device_longitude" jdbcType="VARCHAR" property="deviceLongitude" />
+    <result column="device_latitude" jdbcType="VARCHAR" property="deviceLatitude" />
+    <result column="online_status" jdbcType="VARCHAR" property="onlineStatus" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="del_status" jdbcType="INTEGER" property="delStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, stream_media_id, device_number, device_channel, device_name, device_account,
-    device_password, manufacturer, resolution_ratio, visit_address, distinguish_type, 
-    server_ip, sip_server_ip, status, del_status, create_time
+    id, user_id, stream_media_id, nvr_id, group_id, device_number, device_channel, device_name,
+    device_account, device_password, manufacturer, device_model, resolution_ratio, code_rate,
+    visit_address, visit_port, distinguish_type, device_type, storage_type, sip_server_ip, nvr_ip,
+    device_longitude, device_latitude, online_status, status, del_status, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from bh_device_config
     where id = #{id,jdbcType=INTEGER}
@@ -41,6 +53,12 @@
       AND device_name LIKE CONCAT('%', #{deviceName}, '%')
     </if>
   </select>
+  <select id="findByGroupId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_device_config
+    where status = 0 AND del_status = 0 AND group_id = #{groupId,jdbcType=INTEGER}
+  </select>
   <select id="findByDeviceNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -52,6 +70,22 @@
     <include refid="Base_Column_List" />
     from bh_device_config where status = 0 and del_status = 0
   </select>
+  <select id="findNoNvrDevice" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_device_config where status = 0 and del_status = 0 and storage_type != 2
+  </select>
+  <select id="findNvrDevice" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_device_config where status = 0 and del_status = 0 and storage_type = 2
+  </select>
+  <select id="findBySipId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_device_config
+    where del_status = 0 and stream_media_id = #{sipId,jdbcType=INTEGER}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bh_device_config
@@ -61,18 +95,22 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into bh_device_config (user_id, stream_media_id,
-      device_number, device_channel, device_name, device_account,
-      device_password, manufacturer, resolution_ratio, 
-      visit_address, distinguish_type, server_ip, sip_server_id,
-      status, del_status, create_time
-      )
-    values (#{userId,jdbcType=INTEGER}, #{streamMediaId,jdbcType=INTEGER},
-      #{deviceNumber,jdbcType=VARCHAR},#{deviceChannel,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, #{deviceAccount,jdbcType=VARCHAR},
-      #{devicePassword,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, #{resolutionRatio,jdbcType=VARCHAR}, 
-      #{visitAddress,jdbcType=VARCHAR}, #{distinguishType,jdbcType=VARCHAR}, #{serverIp,jdbcType=VARCHAR}, #{sipServerIp,jdbcType=VARCHAR},
-    #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
-      )
+    insert into bh_device_config (user_id, stream_media_id, nvr_id, group_id,
+    device_number, device_channel, device_name,
+    device_account, device_password, manufacturer,
+    device_model, resolution_ratio, code_rate,
+    visit_address, visit_port, distinguish_type,
+    device_type, storage_type, sip_server_ip, nvr_ip,
+    device_longitude, device_latitude, online_status, status, del_status, create_time,
+    update_time)
+    values (#{userId,jdbcType=INTEGER}, #{streamMediaId,jdbcType=INTEGER}, #{nvrId,jdbcType=INTEGER}, #{groupId,jdbcType=INTEGER},
+    #{deviceNumber,jdbcType=VARCHAR}, #{deviceChannel,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR},
+    #{deviceAccount,jdbcType=VARCHAR}, #{devicePassword,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR},
+    #{deviceModel,jdbcType=VARCHAR}, #{resolutionRatio,jdbcType=VARCHAR}, #{codeRate,jdbcType=INTEGER},
+    #{visitAddress,jdbcType=VARCHAR}, #{visitPort,jdbcType=INTEGER}, #{distinguishType,jdbcType=VARCHAR},
+    #{deviceType,jdbcType=INTEGER}, #{storageType,jdbcType=INTEGER}, #{sipServerIp,jdbcType=VARCHAR}, #{nvrIp,jdbcType=VARCHAR},
+    #{deviceLongitude,jdbcType=VARCHAR}, #{deviceLatitude,jdbcType=VARCHAR}, #{onlineStatus,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.java.model.domain.DeviceConfig">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -85,6 +123,12 @@
       </if>
       <if test="streamMediaId != null">
         stream_media_id,
+      </if>
+      <if test="nvrId != null">
+        nvr_id,
+      </if>
+      <if test="groupId != null">
+        group_id,
       </if>
       <if test="deviceNumber != null">
         device_number,
@@ -104,20 +148,44 @@
       <if test="manufacturer != null">
         manufacturer,
       </if>
+      <if test="deviceModel != null">
+        device_model,
+      </if>
       <if test="resolutionRatio != null">
         resolution_ratio,
+      </if>
+      <if test="codeRate != null">
+        code_rate,
       </if>
       <if test="visitAddress != null">
         visit_address,
       </if>
+      <if test="visitPort != null">
+        visit_port,
+      </if>
       <if test="distinguishType != null">
         distinguish_type,
       </if>
-      <if test="serverIp != null">
-        server_ip,
+      <if test="deviceType != null">
+        device_type,
+      </if>
+      <if test="storageType != null">
+        storage_type,
       </if>
       <if test="sipServerIp != null">
         sip_server_ip,
+      </if>
+      <if test="nvrIp != null">
+        nvr_ip,
+      </if>
+      <if test="deviceLongitude != null">
+        device_longitude,
+      </if>
+      <if test="deviceLatitude != null">
+        device_latitude,
+      </if>
+      <if test="onlineStatus != null">
+        online_status,
       </if>
       <if test="status != null">
         status,
@@ -128,6 +196,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -135,6 +206,12 @@
       </if>
       <if test="streamMediaId != null">
         #{streamMediaId,jdbcType=INTEGER},
+      </if>
+      <if test="nvrId != null">
+        #{nvrId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=INTEGER},
       </if>
       <if test="deviceNumber != null">
         #{deviceNumber,jdbcType=VARCHAR},
@@ -154,20 +231,44 @@
       <if test="manufacturer != null">
         #{manufacturer,jdbcType=VARCHAR},
       </if>
+      <if test="deviceModel != null">
+        #{deviceModel,jdbcType=VARCHAR},
+      </if>
       <if test="resolutionRatio != null">
         #{resolutionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRate != null">
+        #{codeRate,jdbcType=INTEGER},
       </if>
       <if test="visitAddress != null">
         #{visitAddress,jdbcType=VARCHAR},
       </if>
+      <if test="visitPort != null">
+        #{visitPort,jdbcType=INTEGER},
+      </if>
       <if test="distinguishType != null">
         #{distinguishType,jdbcType=VARCHAR},
       </if>
-      <if test="serverIp != null">
-        #{serverIp,jdbcType=VARCHAR},
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="storageType != null">
+        #{storageType,jdbcType=INTEGER},
       </if>
       <if test="sipServerIp != null">
         #{sipServerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrIp != null">
+        #{nvrIp,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLongitude != null">
+        #{deviceLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLatitude != null">
+        #{deviceLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineStatus != null">
+        #{onlineStatus,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -177,6 +278,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -188,6 +292,12 @@
       </if>
       <if test="streamMediaId != null">
         stream_media_id = #{streamMediaId,jdbcType=INTEGER},
+      </if>
+      <if test="nvrId != null">
+        nvr_id = #{nvrId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=INTEGER},
       </if>
       <if test="deviceNumber != null">
         device_number = #{deviceNumber,jdbcType=VARCHAR},
@@ -207,20 +317,44 @@
       <if test="manufacturer != null">
         manufacturer = #{manufacturer,jdbcType=VARCHAR},
       </if>
+      <if test="deviceModel != null">
+        device_model = #{deviceModel,jdbcType=VARCHAR},
+      </if>
       <if test="resolutionRatio != null">
         resolution_ratio = #{resolutionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRate != null">
+        code_rate = #{codeRate,jdbcType=INTEGER},
       </if>
       <if test="visitAddress != null">
         visit_address = #{visitAddress,jdbcType=VARCHAR},
       </if>
+      <if test="visitPort != null">
+        visit_port = #{visitPort,jdbcType=INTEGER},
+      </if>
       <if test="distinguishType != null">
         distinguish_type = #{distinguishType,jdbcType=VARCHAR},
       </if>
-      <if test="serverIp != null">
-        server_ip = #{serverIp,jdbcType=VARCHAR},
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="storageType != null">
+        storage_type = #{storageType,jdbcType=INTEGER},
       </if>
       <if test="sipServerIp != null">
         sip_server_ip = #{sipServerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrIp != null">
+        nvr_ip = #{nvrIp,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLongitude != null">
+        device_longitude = #{deviceLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLatitude != null">
+        device_latitude = #{deviceLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineStatus != null">
+        online_status = #{onlineStatus,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -231,6 +365,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -238,20 +375,31 @@
     update bh_device_config
     set user_id = #{userId,jdbcType=INTEGER},
       stream_media_id = #{streamMediaId,jdbcType=INTEGER},
+      nvr_id = #{nvrId,jdbcType=INTEGER},
+      group_id = #{groupId,jdbcType=INTEGER},
       device_number = #{deviceNumber,jdbcType=VARCHAR},
       device_channel = #{deviceChannel,jdbcType=VARCHAR},
       device_name = #{deviceName,jdbcType=VARCHAR},
       device_account = #{deviceAccount,jdbcType=VARCHAR},
       device_password = #{devicePassword,jdbcType=VARCHAR},
       manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      device_model = #{deviceModel,jdbcType=VARCHAR},
       resolution_ratio = #{resolutionRatio,jdbcType=VARCHAR},
+      code_rate = #{codeRate,jdbcType=INTEGER},
       visit_address = #{visitAddress,jdbcType=VARCHAR},
+      visit_port = #{visitPort,jdbcType=INTEGER},
       distinguish_type = #{distinguishType,jdbcType=VARCHAR},
-      server_ip = #{serverIp,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=INTEGER},
+      storage_type = #{storageType,jdbcType=INTEGER},
       sip_server_ip = #{sipServerIp,jdbcType=VARCHAR},
+      nvr_ip = #{nvrIp,jdbcType=VARCHAR},
+      device_longitude = #{deviceLongitude,jdbcType=VARCHAR},
+      device_latitude = #{deviceLatitude,jdbcType=VARCHAR},
+      online_status = #{onlineStatus,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       del_status = #{delStatus,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -260,20 +408,31 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="stream_media_id" jdbcType="INTEGER" property="streamMediaId" />
+    <result column="nvr_id" jdbcType="INTEGER" property="nvrId" />
+    <result column="group_id" jdbcType="INTEGER" property="groupId" />
     <result column="device_number" jdbcType="VARCHAR" property="deviceNumber" />
     <result column="device_channel" jdbcType="VARCHAR" property="deviceChannel" />
     <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
     <result column="device_account" jdbcType="VARCHAR" property="deviceAccount" />
     <result column="device_password" jdbcType="VARCHAR" property="devicePassword" />
     <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />
     <result column="resolution_ratio" jdbcType="VARCHAR" property="resolutionRatio" />
+    <result column="code_rate" jdbcType="INTEGER" property="codeRate" />
     <result column="visit_address" jdbcType="VARCHAR" property="visitAddress" />
+    <result column="visit_port" jdbcType="INTEGER" property="visitPort" />
     <result column="distinguish_type" jdbcType="VARCHAR" property="distinguishType" />
-    <result column="server_ip" jdbcType="VARCHAR" property="serverIp" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="storage_type" jdbcType="INTEGER" property="storageType" />
     <result column="sip_server_ip" jdbcType="VARCHAR" property="sipServerIp" />
+    <result column="nvr_ip" jdbcType="VARCHAR" property="nvrIp" />
+    <result column="device_longitude" jdbcType="VARCHAR" property="deviceLongitude" />
+    <result column="device_latitude" jdbcType="VARCHAR" property="deviceLatitude" />
+    <result column="online_status" jdbcType="VARCHAR" property="onlineStatus" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="del_status" jdbcType="INTEGER" property="delStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
 
   <!-- 批量删除 逻辑删除-->
@@ -293,20 +452,31 @@
     sa.id,
     sa.user_id,
     sa.stream_media_id,
+    sa.nvr_id,
+    sa.group_id,
     sa.device_number,
     sa.device_channel,
     sa.device_name,
     sa.device_account,
     sa.device_password,
     sa.manufacturer,
+    sa.device_model,
     sa.resolution_ratio,
+    sa.code_rate,
     sa.visit_address,
+    sa.visit_port,
     sa.distinguish_type,
-    sa.server_ip,
+    sa.device_type,
+    sa.storage_type,
     sa.sip_server_ip,
+    sa.nvr_ip,
+    sa.device_longitude,
+    sa.device_latitude,
+    sa.online_status,
     sa.status,
     sa.del_status,
-    sa.create_time
+    sa.create_time,
+    sa.update_time
     from bh_device_config as sa
     <trim prefix="WHERE" prefixOverrides="AND|OR">
       sa.del_status=0 AND sa.user_id = #{userId}
@@ -340,6 +510,8 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="device_id" jdbcType="INTEGER" property="deviceId" />
     <result column="server_id" jdbcType="INTEGER" property="serverId" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <!-- 添加设备、服务器关联关系 -->
@@ -347,8 +519,8 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into bh_device_server (device_id, server_id, create_time)
-    values (#{deviceId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+    insert into bh_device_server (device_id, server_id, device_type, create_time)
+    values (#{deviceId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{deviceType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <!-- 删除设备、服务器关联关系 -->
   <delete id="deleteDeviceServer" parameterType="java.lang.Integer">
@@ -357,6 +529,6 @@
   </delete>
   <!-- 通过设备id查询设备、服务器关联关系 -->
   <select id="findByDeviceId" parameterType="java.lang.Integer" resultMap="DeviceServerResultMap" >
-    select id, device_id, server_id, create_time from bh_device_server where del_status = 0 and device_id = #{deviceId,jdbcType=INTEGER}
+    select id, device_id, server_id, device_type, create_time from bh_device_server where del_status = 0 and device_id = #{deviceId,jdbcType=INTEGER}
   </select>
 </mapper>

@@ -83,11 +83,11 @@ public class MyShiroRealm extends AuthorizingRealm {
                 // 获取当前 管理员 角色列表
                 List<Role> roles = new ArrayList<>();
 
-//                if(admin.getAdminType() == 3){
+                if(admin.getUserType() != 1){
                     roles = roleMapper.getRolesByAdminId(admin.getId());
-//                }else{
-//                    roles = roleMapper.getAllRole();
-//                }
+                }else{
+                    roles = roleMapper.getAllRole();
+                }
 
                 // 获取 角色名称列表、角色ID列表
                 for (Role role: roles) {
@@ -98,14 +98,13 @@ public class MyShiroRealm extends AuthorizingRealm {
                 if (roleIds.size() > 0){
                     // 获取当前角色下的 资源列表
                     List<Resource> resources = new ArrayList<>();
-//                    if(admin.getAdminType() == 3) {
+                    if(admin.getUserType() != 1) {
                         resources = resourceMapper.getResourcesByRoleId(roleIds);
-//                    }else{
-//                        resources = resourceMapper.getAllMenus();
-//                    }
+                    }else{
+                        resources = resourceMapper.getAllMenus();
+                    }
 
-                    for (Resource resource:resources
-                            ) {
+                    for (Resource resource:resources) {
                         if (null != resource){
                             if (!StringUtil.isEmpty(resource.getPerms())){
                                 if (resource.getPerms().contains(",")) {
@@ -127,8 +126,8 @@ public class MyShiroRealm extends AuthorizingRealm {
             authorizationInfo.addRoles(roleNames);
             authorizationInfo.addStringPermissions(perms);
         }
-        logger.info("---- 获取到以下权限 ----");
-        logger.info(authorizationInfo.getStringPermissions().toString());
+//        logger.info("---- 获取到以下权限 ----");
+//        logger.info(authorizationInfo.getStringPermissions().toString());
         logger.info("---------------- Shiro 权限获取成功 ----------------------");
         return authorizationInfo;
     }

@@ -1,6 +1,5 @@
 package com.java.quartz.utils;
 
-import com.java.common.utils.DateUtil;
 import com.java.common.utils.File2CodeUtil;
 import com.java.common.utils.HttpRequestUtils;
 import com.java.common.utils.StringUtil;
@@ -8,14 +7,7 @@ import com.java.quartz.job.CollectJob;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -125,29 +125,32 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public RestResult getMenusByAdminId(Integer adminId) {
 
-        if (null == adminId){
-            return ResultUtils.error(ResultCodeEnum.ILLEGAL_ARGUMENT.getCode(),ResultCodeEnum.ILLEGAL_ARGUMENT.getMsg());
+        if (null == adminId) {
+            return ResultUtils.error(ResultCodeEnum.ILLEGAL_ARGUMENT.getCode(), ResultCodeEnum.ILLEGAL_ARGUMENT.getMsg());
         }
 
         Admin admin = adminMapper.selectByPrimaryKey(adminId);
 
         List<Resource> resources = new ArrayList<>();
-        // 获取角色列表ID
-        List<Integer> roleIds = adminRoleMapper.getAdminRoles(adminId);
-        // 获取所有角色 资源列表
-        resources = resourceMapper.getResourcesByRoleId(roleIds);
+        if (admin.getUserType() == 3) {
+            // 获取角色列表ID
+            List<Integer> roleIds = adminRoleMapper.getAdminRoles(adminId);
+            // 获取所有角色 资源列表
+            resources = resourceMapper.getResourcesByRoleId(roleIds);
+        }else{
+            resources = resourceMapper.getAllMenus();
+        }
 
         List<JSONObject> results = new ArrayList<>();
 
-        if (resources.size() > 0){
+        if (resources.size() > 0) {
             for (Resource one : resources) {
                 // 一级菜单
-                if (one.getParentId() == 0){
+                if (one.getParentId() == 0) {
                     List<Resource> children = new ArrayList<>();
-                    for (Resource two:resources
-                            ) {
+                    for (Resource two : resources) {
                         // 子 二级列表
-                        if (two.getParentId() == one.getPkId()){
+                        if (two.getParentId() == one.getPkId()) {
                             children.add(two);
                         }
                     }
@@ -155,7 +158,6 @@ public class ResourceServiceImpl implements ResourceService {
                     result.put("children", children);
                     results.add(result);
                 }
-
             }
         }
 

@@ -69,23 +69,23 @@
             <version>4.5.6</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
-        <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>2.33</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.sourceforge.htmlunit</groupId>-->
+<!--            <artifactId>htmlunit</artifactId>-->
+<!--            <version>2.33</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.11.3</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jsoup</groupId>-->
+<!--            <artifactId>jsoup</artifactId>-->
+<!--            <version>1.11.3</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>io.projectreactor.ipc</groupId>
-            <artifactId>reactor-netty</artifactId>
-            <version>0.7.3.RELEASE</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.projectreactor.ipc</groupId>-->
+<!--            <artifactId>reactor-netty</artifactId>-->
+<!--            <version>0.7.3.RELEASE</version>-->
+<!--        </dependency>-->
 
         <!-- 邮箱类 -->
         <dependency>
@@ -119,6 +119,41 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- 微信公众号开发java SDK -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <!-- 二维码相关 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+
+        <!-- SPI协议相关的包 -->
+        <dependency>
+            <groupId>javax.sip</groupId>
+            <artifactId>jain-sip-api</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.sip</groupId>
+            <artifactId>jain-sip-ri</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
         </dependency>
 
     </dependencies>

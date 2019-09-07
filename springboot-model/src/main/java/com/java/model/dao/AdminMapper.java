@@ -53,12 +53,12 @@ public interface AdminMapper {
      */
     Admin selectByEmail(String email);
 
-    /**
-     * 通过用户名获取用户
-     * @param email
-     * @return
-     */
-    Admin selectByUserName(String email);
+//    /**
+//     * 通过用户名获取用户
+//     * @param userName
+//     * @return
+//     */
+//    Admin selectByUserName(String userName);
 
     /**
      * 超级管理员查询所有的用户不包括自己

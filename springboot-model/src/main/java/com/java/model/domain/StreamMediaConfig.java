@@ -60,6 +60,12 @@ public class StreamMediaConfig {
     private String accessRoute;
 
     /**
+     * 列表显示
+     */
+    @ApiModelProperty(value="列表显示，无需添加")
+    private String accessRouteStr;
+
+    /**
      * 创建用户类型
      */
     @ApiModelProperty(value="创建用户类型")
@@ -153,6 +159,14 @@ public class StreamMediaConfig {
 
     public void setAccessRoute(String accessRoute) {
         this.accessRoute = accessRoute == null ? null : accessRoute.trim();
+    }
+
+    public String getAccessRouteStr() {
+        return accessRouteStr;
+    }
+
+    public void setAccessRouteStr(String accessRouteStr) {
+        this.accessRouteStr = accessRouteStr;
     }
 
     public Integer getCreateUserType() {

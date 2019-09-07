@@ -19,15 +19,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -79,7 +76,7 @@ public class HttpRequestUtils {
 			java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) connURL
 					.openConnection();
 			// 设置通用属性
-			httpConn.setConnectTimeout(2000);// 连接超时设置
+			httpConn.setConnectTimeout(3000);// 连接超时设置
 			httpConn.setRequestProperty("Accept", "*/*");
 			httpConn.setRequestProperty("Connection", "Keep-Alive");
 			httpConn.setRequestProperty("User-Agent",

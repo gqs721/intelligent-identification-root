@@ -1,11 +1,7 @@
 package com.java.system.service;
 
 import com.java.common.result.RestResult;
-import com.java.model.domain.Admin;
 import com.java.model.domain.SysFile;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Mr.BH

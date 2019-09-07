@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="D:/TOOL/java/jar/mysql-connector-java-5.1.40.jar"/>
+            location="E:/TOOL/java/jar/mysql-connector-java-5.1.40.jar"/>
     <context id="my" targetRuntime="MyBatis3">
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
         <!--<commentGenerator>-->
@@ -30,23 +30,23 @@
 
 
         <javaModelGenerator targetPackage="com.java.model.domain"
-                            targetProject="D:/JAVA/MyWorkSpaces/Idea_projects/intelligent-identification-root/doc/MODEL/domain">
+                            targetProject="E:/JAVA/Idea_projects/intelligent-identification-root/doc/MODEL/domain">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
         <sqlMapGenerator targetPackage="com.java.model.mapper"
-                         targetProject="D:/JAVA/MyWorkSpaces/Idea_projects/intelligent-identification-root/doc/MODEL/mapper">
+                         targetProject="E:/JAVA/Idea_projects/intelligent-identification-root/doc/MODEL/mapper">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
         <javaClientGenerator targetPackage="com.java.model.dao"
-                             targetProject="D:/JAVA/MyWorkSpaces/Idea_projects/intelligent-identification-root/doc/MODEL/dao"
+                             targetProject="E:/JAVA/Idea_projects/intelligent-identification-root/doc/MODEL/dao"
                              type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="bh_identification_library"  domainObjectName="IdentificationLibrary"
+        <table tableName="bh_officia_accounts_config"  domainObjectName="OfficiaAccountsConfig"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

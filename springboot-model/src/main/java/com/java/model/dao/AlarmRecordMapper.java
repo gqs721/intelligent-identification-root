@@ -1,8 +1,6 @@
 package com.java.model.dao;
 
-import com.java.model.domain.AlarmRecord;
-import com.java.model.domain.DictData;
-import com.java.model.domain.PushRecord;
+import com.java.model.domain.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -71,15 +69,24 @@ public interface AlarmRecordMapper {
      */
     List<DictData> findByTypeCode(String typeCode);
 
-    int savePushRecord(PushRecord pushRecord);
+    int savePushConfig(PushConfig pushConfig);
 
-    List<PushRecord> findPushRecord(@Param("deviceId") Integer deviceId, @Param("serverId") Integer serverId);
+    List<PushConfig> findPushConfig(@Param("deviceId") Integer deviceId, @Param("serverId") Integer serverId);
 
-    int deletePushRecord(Integer id);
+    int deletePushConfig(Integer id);
 
     int savePushWeixin(@Param("openId") String openId, @Param("createTime") Date createTime);
 
     List<String> findPushWeixin();
 
     int unbindOpenId(String openId);
+
+    /**
+     * 通过用户id查询对应的公众号配置信息
+     * @param userId
+     * @return
+     */
+    OfficiaAccountsConfig selectByUserId(Integer userId);
+
+    int savePushRecord(@Param("alarmId") Integer alarmId, @Param("pushId") Integer pushId, @Param("createTime") Date createTime);
 }

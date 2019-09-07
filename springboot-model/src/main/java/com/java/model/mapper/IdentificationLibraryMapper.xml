@@ -357,21 +357,21 @@
   </select>
 
   <!-- 保存推送记录 -->
-  <insert id="savePushRecord" parameterType="com.java.model.domain.PushRecord">
+  <insert id="savePushConfig" parameterType="com.java.model.domain.PushConfig">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into bh_push_record (device_id, server_id, identification_type, create_time)
+    insert into bh_push_config (device_id, server_id, identification_type, create_time)
     values (#{deviceId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{identificationType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <!-- 查找推送记录 -->
-  <select id="findPushRecord" resultType="com.java.model.domain.PushRecord">
+  <select id="findPushConfig" resultType="com.java.model.domain.PushConfig">
     select id, device_id deviceId, server_id serverId, identification_type identificationType, push_interval pushInterval, create_time createTime
-    from bh_push_record where device_id = #{deviceId, jdbcType=INTEGER} AND server_id = #{serverId, jdbcType=INTEGER}
+    from bh_push_config where device_id = #{deviceId, jdbcType=INTEGER} AND server_id = #{serverId, jdbcType=INTEGER}
   </select>
   <!-- 删除推送记录 -->
-  <delete id="deletePushRecord" parameterType="java.lang.Integer">
-    delete from bh_push_record where id = #{id, jdbcType=INTEGER}
+  <delete id="deletePushConfig" parameterType="java.lang.Integer">
+    delete from bh_push_config where id = #{id, jdbcType=INTEGER}
   </delete>
 
 

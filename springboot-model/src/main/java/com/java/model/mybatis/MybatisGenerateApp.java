@@ -22,7 +22,7 @@ public class MybatisGenerateApp {
             // 使用这个 获取的路径 会报错
 //            String configFilePath = System.getProperty("user.dir").concat("/code/src/main/resources/mybatis/generatorConfig.xml");
             // 系统 mybatis 配置文件路径
-            String configPath = "D:\\JAVA\\MyWorkSpaces\\Idea_projects\\intelligent-identification-root\\springboot-model\\src\\main\\resources\\mybatis\\generatorConfig.xml";
+            String configPath = "E:\\JAVA\\Idea_projects\\intelligent-identification-root\\springboot-model\\src\\main\\resources\\mybatis\\generatorConfig.xml";
 
             boolean overwrite = true;
             File configFile = new File(configPath);

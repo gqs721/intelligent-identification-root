@@ -3,6 +3,7 @@
 <mapper namespace="com.java.model.dao.AdminMapper">
     <resultMap id="BaseResultMap" type="com.java.model.domain.Admin">
         <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
         <result column="user_name" jdbcType="VARCHAR" property="userName" />
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="real_name" jdbcType="VARCHAR" property="realName" />
@@ -14,14 +15,17 @@
         <result column="authenticator" jdbcType="VARCHAR" property="authenticator" />
         <result column="salt" jdbcType="VARCHAR" property="salt" />
         <result column="user_type" jdbcType="INTEGER" property="userType" />
+        <result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+        <result column="login_num" jdbcType="INTEGER" property="loginNum" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="status" jdbcType="INTEGER" property="status" />
         <result column="del_status" jdbcType="INTEGER" property="delStatus" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
     </resultMap>
     <sql id="Base_Column_List">
-    id, user_name, password, real_name, company_name, business_license,
-    company_logo, email, contact_way, authenticator, salt, user_type, status,
+    id, user_id, user_name, password, real_name, company_name, business_license,
+    company_logo, email, contact_way, authenticator, salt, user_type, qr_code, login_num, remark, status,
     del_status, create_time, last_login_time
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -38,18 +42,18 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into sys_admin (user_name, password,
+        insert into sys_admin (user_id, user_name, password,
         real_name, company_name, business_license,
         company_logo, email, contact_way,
         authenticator, salt, user_type,
-        status,
+        qr_code, login_num, remark, status,
         del_status, create_time, last_login_time
         )
-        values (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+        values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
         #{realName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{businessLicense,jdbcType=VARCHAR},
         #{companyLogo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{contactWay,jdbcType=VARCHAR},
         #{authenticator,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
-        #{status,jdbcType=INTEGER},
+        #{qrCode,jdbcType=VARCHAR}, #{loginNum,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
         #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastLoginTime,jdbcType=TIMESTAMP}
         )
     </insert>
@@ -59,6 +63,9 @@
         </selectKey>
         insert into sys_admin
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
             <if test="userName != null">
                 user_name,
             </if>
@@ -92,6 +99,15 @@
             <if test="userType != null">
                 user_type,
             </if>
+            <if test="qrCode != null">
+                qr_code,
+            </if>
+            <if test="loginNum != null">
+                login_num,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
             <if test="status != null">
                 status,
             </if>
@@ -106,6 +122,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
             <if test="userName != null">
                 #{userName,jdbcType=VARCHAR},
             </if>
@@ -139,6 +158,15 @@
             <if test="userType != null">
                 #{userType,jdbcType=INTEGER},
             </if>
+            <if test="qrCode != null">
+                #{qrCode,jdbcType=VARCHAR},
+            </if>
+            <if test="loginNum != null">
+                #{loginNum,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
             </if>
@@ -156,6 +184,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.Admin">
         update sys_admin
         <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
             <if test="userName != null">
                 user_name = #{userName,jdbcType=VARCHAR},
             </if>
@@ -189,6 +220,15 @@
             <if test="userType != null">
                 user_type = #{userType,jdbcType=INTEGER},
             </if>
+            <if test="qrCode != null">
+                qr_code = #{qrCode,jdbcType=VARCHAR},
+            </if>
+            <if test="loginNum != null">
+                login_num = #{loginNum,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
             <if test="status != null">
                 status = #{status,jdbcType=INTEGER},
             </if>
@@ -206,7 +246,8 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.java.model.domain.Admin">
     update sys_admin
-    set user_name = #{userName,jdbcType=VARCHAR},
+    set user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       real_name = #{realName,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
@@ -217,6 +258,9 @@
       authenticator = #{authenticator,jdbcType=VARCHAR},
       salt = #{salt,jdbcType=VARCHAR},
       user_type = #{userType,jdbcType=INTEGER},
+      qr_code = #{qrCode,jdbcType=VARCHAR},
+      login_num = #{loginNum,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       del_status = #{delStatus,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -229,6 +273,7 @@
     <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         sa.id,
+        sa.user_id,
         sa.user_name,
         sa.real_name,
         sa.company_name,
@@ -239,15 +284,19 @@
         sa.authenticator,
         sa.salt,
         sa.user_type,
+        sa.qr_code,
+        sa.login_num,
+        sa.remark,
         sa.status,
         sa.del_status,
         sa.create_time,
         sa.last_login_time
         from sys_admin as sa where email = #{email}
     </select>
-    <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--<select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         sa.id,
+        sa.user_id,
         sa.user_name,
         sa.real_name,
         sa.company_name,
@@ -262,16 +311,17 @@
         sa.del_status,
         sa.create_time,
         sa.last_login_time
-        from sys_admin as sa where user_name = #{userName}
-    </select>
+        from sys_admin as sa where del_status=0 and user_name = #{userName}
+    </select>-->
 
     <select id="getByAuthenticatorUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select * from sys_admin where user_name=#{userName} and del_status=0;
+        select * from sys_admin where user_name=#{userName} and del_status=0
     </select>
 
     <!-- 管理员 -->
     <resultMap id="AdminResultMap" type="java.util.HashMap">
         <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
         <result column="user_name" jdbcType="VARCHAR" property="userName" />
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="real_name" jdbcType="VARCHAR" property="realName" />
@@ -283,6 +333,9 @@
         <result column="authenticator" jdbcType="VARCHAR" property="authenticator" />
         <result column="salt" jdbcType="VARCHAR" property="salt" />
         <result column="user_type" jdbcType="INTEGER" property="userType" />
+        <result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+        <result column="login_num" jdbcType="INTEGER" property="loginNum" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="status" jdbcType="INTEGER" property="status" />
         <result column="del_status" jdbcType="INTEGER" property="delStatus" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -315,6 +368,7 @@
     <select id="getAdminByUserName" parameterType="java.lang.String" resultMap="AdminResultMap">
         select
         sa.id,
+        sa.user_id,
         sa.user_name,
         sa.real_name,
         sa.company_name,
@@ -325,6 +379,9 @@
         sa.authenticator,
         sa.salt,
         sa.user_type,
+        sa.qr_code,
+        sa.login_num,
+        sa.remark,
         sa.status,
         sa.del_status,
         sa.create_time,
@@ -348,6 +405,7 @@
     <select id="listPage" parameterType="java.util.HashMap" resultMap="AdminResultMap">
         select
         sa.id,
+        sa.user_id,
         sa.user_name,
         sa.real_name,
         sa.company_name,
@@ -356,6 +414,9 @@
         sa.email,
         sa.contact_way,
         sa.user_type,
+        sa.qr_code,
+        sa.login_num,
+        sa.remark,
         sa.status,
         sa.del_status,
         sa.create_time,
@@ -363,6 +424,9 @@
         from sys_admin as sa
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             sa.del_status=0 AND sa.user_type=2
+            <if test="userId != 0">
+                AND sa.user_id = #{userId}
+            </if>
             <if test="userType != 0">
                 AND sa.user_type = #{userType}
             </if>
@@ -385,6 +449,9 @@
         from sys_admin as sa
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             sa.del_status=0 AND sa.user_type=2
+            <if test="userId != 0">
+                AND sa.user_id = #{userId}
+            </if>
             <if test="userType != 0">
                 AND sa.user_type = #{userType}
             </if>

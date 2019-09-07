@@ -1,7 +1,6 @@
 package com.java.system.service;
 
 import com.java.common.result.RestResult;
-import com.java.model.domain.ServerConfig;
 import com.java.model.domain.StreamMediaConfig;
 
 import java.util.List;

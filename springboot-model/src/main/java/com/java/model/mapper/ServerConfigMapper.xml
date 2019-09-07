@@ -32,7 +32,7 @@
     select
     <include refid="Base_Column_List" />
     from bh_server_config
-    where user_id = #{userId,jdbcType=INTEGER}
+    where status = 0 and del_status = 0 and user_id = #{userId,jdbcType=INTEGER} order by identification_type
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from bh_server_config

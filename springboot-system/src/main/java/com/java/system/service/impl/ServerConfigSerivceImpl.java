@@ -4,7 +4,9 @@ import com.java.common.constants.ParamConstant;
 import com.java.common.result.PageResult;
 import com.java.common.result.RestResult;
 import com.java.common.result.ResultUtils;
+import com.java.common.utils.StringUtil;
 import com.java.model.dao.*;
+import com.java.model.domain.DictData;
 import com.java.model.domain.ServerConfig;
 import com.java.system.redis.JWTRedisDAO;
 import com.java.system.service.ServerConfigService;
@@ -26,7 +28,7 @@ public class ServerConfigSerivceImpl implements ServerConfigService {
     private ServerConfigMapper serverConfigMapper;
 
     @Autowired
-    private AdminMapper adminMapper;
+    private DictDataMapper dictDataMapper;
 
     @Autowired
     private JWTRedisDAO jwtRedisDAO;
@@ -98,7 +100,16 @@ public class ServerConfigSerivceImpl implements ServerConfigService {
 
     @Override
     public RestResult findByUserId(Integer userId){
-        return ResultUtils.success(serverConfigMapper.findByUserId(userId));
+        List<ServerConfig> scList = serverConfigMapper.findByUserId(userId);
+        List<DictData> ddList = dictDataMapper.findByTypeCode("identification_type");
+        for (ServerConfig sc : scList){
+            for (DictData dd : ddList){
+                if(StringUtil.CheckIsEqual(sc.getIdentificationType(), dd.getDictCode())){
+                    sc.setIdentificationTypeStr(dd.getDictValue());
+                }
+            }
+        }
+        return ResultUtils.success(scList);
     }
 
 }

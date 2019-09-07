@@ -1,35 +1,35 @@
 package com.java.quartz.utils;
 
 
-import com.java.common.utils.Base64Util;
-import com.java.common.utils.DateUtil;
-import com.java.common.utils.HttpRequestUtils;
-import com.java.common.utils.StringUtil;
+import com.java.common.utils.*;
 import com.java.model.dao.AlarmRecordMapper;
-import com.java.model.dao.IdentificationLibraryMapper;
+import com.java.model.dao.DeviceConfigMapper;
+import com.java.model.dao.PushWeixinMapper;
+import com.java.model.dao.ServerConfigMapper;
 import com.java.model.domain.*;
 import com.java.quartz.WebSocketServer;
 import com.java.quartz.job.CollectJob;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacv.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by fang on 17-4-6.
@@ -45,11 +45,11 @@ import java.util.concurrent.*;
 @Component
 public class OpencvUtil {
 
-    // 线程池
-    final ExecutorService executor = Executors.newCachedThreadPool();
+    // 拉流和图片处理的线程池
+    final ExecutorService executorFixed = Executors.newFixedThreadPool(2);
 
     // 初始化队列
-    final LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>(5);
+    final LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>(10);
 
     // 人脸识别推送记录
     public static Map<String, Object> nameMap = new HashMap<>();
@@ -60,15 +60,16 @@ public class OpencvUtil {
      * @param dc
      * @throws Exception
      */
-    public void javacvFun(FFmpegFrameGrabber grabber, String rtspPath, DeviceConfig dc, Integer frameInterval, Integer reloadRtsp) {
-        executor.submit(new Runnable() {
+    public void javacvFun(FFmpegFrameGrabber grabber, String rtspPath, DeviceConfig dc, String deviceChannel, Integer frameInterval, Integer reloadRtsp) {
+        executorFixed.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    dealRTSP(grabber, rtspPath, dc, frameInterval, reloadRtsp);
+                    dealRTSP(grabber, rtspPath, dc, deviceChannel, frameInterval, reloadRtsp);
                 } catch (Exception e) {
-                    CollectJob.deviceList.remove(dc.getDeviceNumber());
                     e.printStackTrace();
+                }finally {
+                    CollectJob.deviceMap.remove(dc.getDeviceNumber()+"_"+deviceChannel);
                 }
             }
         });
@@ -76,17 +77,17 @@ public class OpencvUtil {
 
     /**
      * 启动图片处理线程
-     * @param scList
+     * @param deviceChannel
      * @param dc
      * @param alarmRecordMapper
      * @param json
      */
-    public void dealIdentificationFun(List<ServerConfig> scList, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json) {
-        executor.submit(new Runnable() {
+    public void dealIdentificationFun(String deviceChannel, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json, DeviceConfigMapper deviceConfigMapper, ServerConfigMapper serverConfigMapper, PushWeixinMapper pushWeixinMapper) {
+        executorFixed.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    dealIdentification(scList, dc, alarmRecordMapper, json);
+                    dealIdentification(deviceChannel, dc, alarmRecordMapper, json, deviceConfigMapper, serverConfigMapper, pushWeixinMapper);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -102,17 +103,21 @@ public class OpencvUtil {
      * @param alarmRecordMapper
      * @param json
      */
-    public void dealModelFun(String base64Img, ServerConfig sc, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json) {
-        executor.submit(new Runnable() {
+    public void dealModelFun(String base64Img, ServerConfig sc, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json, PushWeixinMapper pushWeixinMapper) {
+        Future future = CollectJob.executor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    dealModel(base64Img, sc, dc, alarmRecordMapper, json);
+                    dealModel(base64Img, sc, dc, alarmRecordMapper, json, pushWeixinMapper);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+
+        if(future.isDone()){
+            future.cancel(true);
+        }
     }
 
     /**
@@ -121,40 +126,41 @@ public class OpencvUtil {
      * @param rtspPath -该地址可以是网络直播/录播地址，也可以是远程/本地文件路径
      * @throws Exception
      */
-    public void executeJavacv(JSONObject json, String rtspPath, DeviceConfig dc, List<ServerConfig> scList, AlarmRecordMapper alarmRecordMapper) {
+    public void executeJavacv(JSONObject json, String rtspPath, DeviceConfig dc, String deviceChannel, AlarmRecordMapper alarmRecordMapper, DeviceConfigMapper deviceConfigMapper, ServerConfigMapper serverConfigMapper, PushWeixinMapper pushWeixinMapper) {
         FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(rtspPath);
         grabber.setOption("rtsp_transport","tcp");
 //        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber("D:\\JAVA\\tomcat-8.5.43\\webapps\\video\\TopEyeVideo_20190626113520.mp4");
 
         try {
-            CollectJob.deviceList.add(dc.getDeviceNumber());
             // 获取截取帧间隔
             List<DictData> list1 = alarmRecordMapper.findByTypeCode("frame_interval");
             // 获取重新拉流间隔
             List<DictData> list2 = alarmRecordMapper.findByTypeCode("reload_rtsp");
             // 拉流线程
-            javacvFun(grabber, rtspPath, dc, Integer.parseInt(list1.get(0).getDictCode()), Integer.parseInt(list2.get(0).getDictCode()));
+            javacvFun(grabber, rtspPath, dc, deviceChannel, Integer.parseInt(list1.get(0).getDictCode()), Integer.parseInt(list2.get(0).getDictCode()));
 
             // 处理图片线程
-            dealIdentificationFun(scList, dc, alarmRecordMapper, json);
+            dealIdentificationFun(deviceChannel, dc, alarmRecordMapper, json, deviceConfigMapper, serverConfigMapper, pushWeixinMapper);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void dealRTSP(FFmpegFrameGrabber grabber, String rtspPath, DeviceConfig dc, Integer frameInterval, Integer reloadRtsp) throws FrameGrabber.Exception {
+    public void dealRTSP(FFmpegFrameGrabber grabber, String rtspPath, DeviceConfig dc, String deviceChannel, Integer frameInterval, Integer reloadRtsp) throws FrameGrabber.Exception {
         try {//建议在线程中使用该方法
             grabber.start();
+            CollectJob.deviceMap.put(dc.getDeviceNumber()+"_"+deviceChannel, grabber);
             Frame frame = null;
             int i = 0;
             while (grabber != null && (frame = grabber.grabFrame()) != null) {
-//                Thread.sleep(13);
+//                Thread.sleep(15);
                 // 每隔多少帧进行重新拉流，1s是25-30帧
                 if(i != 0 && (i % reloadRtsp) == 0){
-                    System.out.println("=====================重新拉流:："+rtspPath+"======================");
                     if(grabber != null){
                         grabber.stop();
                         grabber = null;
+//                        grabber.restart();
+                        System.out.println("=====================重新拉流成功："+rtspPath+"======================");
                         grabber = new FFmpegFrameGrabber(rtspPath);
                         grabber.setOption("rtsp_transport","tcp");
                         grabber.start();
@@ -187,24 +193,34 @@ public class OpencvUtil {
             }
         }catch (Exception e){
             e.printStackTrace();
-            CollectJob.deviceList.remove(dc.getDeviceNumber());
+            CollectJob.deviceMap.remove(dc.getDeviceNumber()+"_"+deviceChannel);
         }finally {
             if (grabber != null) {
                 grabber.stop();
+                grabber.release();
             }
-            CollectJob.deviceList.remove(dc.getDeviceNumber());
+            CollectJob.deviceMap.remove(dc.getDeviceNumber()+"_"+deviceChannel);
         }
     }
 
-    public void dealIdentification(List<ServerConfig> scList, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json) throws InterruptedException {
+    public void dealIdentification(String deviceChannel, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json, DeviceConfigMapper deviceConfigMapper, ServerConfigMapper serverConfigMapper, PushWeixinMapper pushWeixinMapper) throws InterruptedException {
         String base64Img = "";
 
         while ((base64Img = queue.take()) != "") {
             System.out.println("======处理图片移除头队列======");
+            List<DeviceServer> dsList = deviceConfigMapper.findByDeviceId(dc.getId());
+            List<Integer> serverIds = new ArrayList<>();
+            for (int j = 0; j < dsList.size(); j++) {
+                serverIds.add(dsList.get(j).getServerId());
+            }
+            if (serverIds.isEmpty()) {
+                continue;
+            }
+            List<ServerConfig> scList = serverConfigMapper.findByServerIds(serverIds);
             for (int j = 0; j < scList.size(); j++) {
                 ServerConfig sc = scList.get(j);
                 // 开启模型识别线程
-                dealModelFun(base64Img, sc, dc, alarmRecordMapper, json);
+                dealModelFun(base64Img, sc, dc, alarmRecordMapper, json, pushWeixinMapper);
             }
         }
     }
@@ -218,7 +234,7 @@ public class OpencvUtil {
     private boolean dealFire = true;
     private boolean dealInvade = true;
 
-    public void dealModel(String base64Img, ServerConfig sc, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json){
+    public void dealModel(String base64Img, ServerConfig sc, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json, PushWeixinMapper pushWeixinMapper){
         String result = "";
         String ip = sc.getServerIp();
         int port = sc.getServerPort();
@@ -226,43 +242,43 @@ public class OpencvUtil {
         boolean isDealModel = true;
         // TODO 一分钟内只保存一次告警记录
         Integer pushInterval = 0;
-        List<PushRecord> prList = alarmRecordMapper.findPushRecord(dc.getId(), sc.getId());
+        List<PushConfig> pcList = alarmRecordMapper.findPushConfig(dc.getId(), sc.getId());
 
         if(!StringUtil.CheckIsEqual("6", sc.getIdentificationType())) {
-            if (prList.isEmpty()) {
-                PushRecord pr = new PushRecord();
-                pr.setDeviceId(dc.getId());
-                pr.setServerId(sc.getId());
-                pr.setCreateTime(DateUtil.getCurrentDate());
-                alarmRecordMapper.savePushRecord(pr);
+            if (pcList.isEmpty()) {
+                PushConfig pc = new PushConfig();
+                pc.setDeviceId(dc.getId());
+                pc.setServerId(sc.getId());
+                pc.setCreateTime(DateUtil.getCurrentDate());
+                alarmRecordMapper.savePushConfig(pc);
             } else {
-                PushRecord pr = prList.get(0);
-                if (DateUtil.calLastedTime(pr.getCreateTime(), DateUtil.getCurrentDate()) >= pr.getPushInterval()) {
+                PushConfig pc = pcList.get(0);
+                if (DateUtil.calLastedTime(pc.getCreateTime(), DateUtil.getCurrentDate()) >= pc.getPushInterval()) {
 
-                    for (int k = 0; k < prList.size(); k++) {
-                        alarmRecordMapper.deletePushRecord(prList.get(k).getId());
+                    for (int k = 0; k < pcList.size(); k++) {
+                        alarmRecordMapper.deletePushConfig(pcList.get(k).getId());
                     }
 
-                    pr = new PushRecord();
-                    pr.setDeviceId(dc.getId());
-                    pr.setServerId(sc.getId());
-                    pr.setCreateTime(DateUtil.getCurrentDate());
-                    alarmRecordMapper.savePushRecord(pr);
+                    pc = new PushConfig();
+                    pc.setDeviceId(dc.getId());
+                    pc.setServerId(sc.getId());
+                    pc.setCreateTime(DateUtil.getCurrentDate());
+                    alarmRecordMapper.savePushConfig(pc);
                 } else {
                     isDealModel = false;
                 }
             }
         }else{
-            PushRecord pr = new PushRecord();
-            if (prList.isEmpty()) {
-                pr.setDeviceId(dc.getId());
-                pr.setServerId(sc.getId());
-                pr.setCreateTime(DateUtil.getCurrentDate());
-                alarmRecordMapper.savePushRecord(pr);
+            PushConfig pc = new PushConfig();
+            if (pcList.isEmpty()) {
+                pc.setDeviceId(dc.getId());
+                pc.setServerId(sc.getId());
+                pc.setCreateTime(DateUtil.getCurrentDate());
+                alarmRecordMapper.savePushConfig(pc);
             } else {
-                pr = prList.get(0);
+                pc = pcList.get(0);
             }
-            pushInterval = pr.getPushInterval();
+            pushInterval = pc.getPushInterval();
             // 人脸识别的先不进行限时推送,不推送陌生人的识别记录
             if(json.getInt("faceKind") == 0) {
                 isDealModel = false;
@@ -272,7 +288,7 @@ public class OpencvUtil {
         if(isDealModel) {
             if (dealSmoke && StringUtil.CheckIsEqual("1", sc.getIdentificationType())) {// TODO 吸烟识别
                 dealSmoke = false;
-                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + sc.getId(), "smoke");
+                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + dc.getId(), "smoke");
                 dealSmoke = true;
             } else if (dealHardhat && StringUtil.CheckIsEqual("2", sc.getIdentificationType())) { // TODO 火情识别
                 dealFire = false;
@@ -284,11 +300,11 @@ public class OpencvUtil {
                 dealInvade = true;
             } else if (dealHardhat && StringUtil.CheckIsEqual("4", sc.getIdentificationType())) { // TODO 安全帽识别
                 dealHardhat = false;
-                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + sc.getId(), "hardhat");
+                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + dc.getId(), "hardhat");
                 dealHardhat = true;
             } else if (dealUniform && StringUtil.CheckIsEqual("5", sc.getIdentificationType())) {// TODO 工作服识别
                 dealUniform = false;
-                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + sc.getId(), "uniform");
+                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + dc.getId(), "uniform");
                 dealUniform = true;
             } else if (dealFace && StringUtil.CheckIsEqual("6", sc.getIdentificationType())) { // TODO 黑名单识别/人脸识别
                 dealFace = false;
@@ -296,11 +312,11 @@ public class OpencvUtil {
                 dealFace = true;
             } else if (dealLadder && StringUtil.CheckIsEqual("7", sc.getIdentificationType())) {// TODO 扶梯子识别
                 dealLadder = false;
-                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + sc.getId(), "ladder");
+                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + dc.getId(), "ladder");
                 dealLadder = true;
             } else if (dealPhone && StringUtil.CheckIsEqual("8", sc.getIdentificationType())) {// TODO 手机识别
                 dealPhone = false;
-                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + sc.getId(), "phone");
+                result = RecognitionModelUtil.modelByBase64Pic(base64Img, ip, port, dc.getDeviceNumber() + dc.getId(), "phone");
                 dealPhone = true;
             }
 
@@ -312,7 +328,7 @@ public class OpencvUtil {
 
                 JSONObject obj = JSONObject.fromObject(result);
                 if (obj.getInt("code") == 0) {
-                    saveAlarmRecord(sc.getIdentificationType(), result, dc, alarmRecordMapper, json, pushInterval);
+                    saveAlarmRecord(sc.getIdentificationType(), result, dc, alarmRecordMapper, json, pushInterval, pushWeixinMapper);
 //                    if (!StringUtil.CheckIsEqual("6", sc.getIdentificationType())) {
 //                        if (prList.isEmpty()) {
 //                            PushRecord pr = new PushRecord();
@@ -361,7 +377,7 @@ public class OpencvUtil {
         }
     }
 
-    public void saveAlarmRecord(String type, String result, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json, Integer pushInterval){
+    public void saveAlarmRecord(String type, String result, DeviceConfig dc, AlarmRecordMapper alarmRecordMapper, JSONObject json, Integer pushInterval, PushWeixinMapper pushWeixinMapper){
         List<AlarmRecord> arList = new ArrayList<>();
 
         Date date = DateUtil.getCurrentDate();
@@ -444,7 +460,7 @@ public class OpencvUtil {
         pushWebSocket(arList, dc.getUserId());
         // 通过微信推送告警记录
         if(json.getBoolean("sendWeixinMsg")) {
-            pushWeixin(arList, alarmRecordMapper, json.getString("pushWeixinUrl"));
+            pushWeixin(arList, alarmRecordMapper, json.getString("pushWeixinUrl"), pushWeixinMapper);
         }
     }
 
@@ -460,18 +476,38 @@ public class OpencvUtil {
     }
 
     // 推送消息到微信
-    public void pushWeixin(List<AlarmRecord> arList, AlarmRecordMapper alarmRecordMapper, String pushWeixinUrl){
-        List<String> openIdList = alarmRecordMapper.findPushWeixin();
+    public void pushWeixin(List<AlarmRecord> arList, AlarmRecordMapper alarmRecordMapper, String pushWeixinUrl, PushWeixinMapper pushWeixinMapper){
+//        List<String> openIdList = alarmRecordMapper.findPushWeixin();
+
+
         if(arList != null && !arList.isEmpty()) {
             for (int i = 0; i < arList.size(); i++) {
                 AlarmRecord ar = arList.get(i);
-                for (int j = 0; j < openIdList.size(); j++) {
-                    if(StringUtil.isEmpty(openIdList.get(j))){
+
+                // 查询对应要推送的微信用户
+                List<PushWeixin> pwList= pushWeixinMapper.selectByTypeAndDeviceId(ar.getAlarmType(), ar.getDeviceId());
+
+                for (int j = 0; j < pwList.size(); j++) {
+                    if(StringUtil.isEmpty(pwList.get(j).getOpenId())){
                         continue;
                     }
+
+                    // 保存告警记录和微信用户的关系
+                    alarmRecordMapper.savePushRecord(ar.getId(), pwList.get(j).getId(), DateUtil.getCurrentDate());
+
+                    // 先查询对应的公众号配置信息
+                    OfficiaAccountsConfig oac = alarmRecordMapper.selectByUserId(pwList.get(j).getUserId());
+                    if(oac == null){
+                        // 直接查询超级管理员配置的微信公众号信息
+                        oac = alarmRecordMapper.selectByUserId(1);
+                        if(oac == null){
+                            continue;
+                        }
+                    }
+
                     JSONObject json = new JSONObject();
                     try {
-                        json.put("open_id", openIdList.get(j));
+                        json.put("open_id", pwList.get(j).getOpenId());
                         json.put("warn_time", DateUtil.parseDateStr(ar.getAlarmDate()));
                         json.put("warn_position", ar.getDeviceName());
                         if (ar.getAlarmType() == 1) {
@@ -503,13 +539,16 @@ public class OpencvUtil {
 //                        json.put("content", "你有一个" + json.getString("warn_kind") + "，请点击查看");
                         json.put("url", ar.getPrintscreen());
 
-                        HttpRequestUtils.POST_FORM(pushWeixinUrl + "/wechat/warn", json, "UTF-8");
+//                        HttpRequestUtils.POST_FORM(pushWeixinUrl + "/wechat/warn", json, "UTF-8");
+
+                        WeChatPushUtil.weChatPush(json, oac.getAppId(), oac.getAppSecret(), oac.getAlarmTemplateId());
+
+                        System.out.println("======================================微信消息推送==================================");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-            System.out.println("======================================微信消息推送==================================");
         }
     }
 

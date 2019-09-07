@@ -2,7 +2,6 @@ package com.java.system.service;
 
 import com.java.common.result.RestResult;
 import com.java.model.domain.AlarmRecord;
-import com.java.model.domain.DeviceConfig;
 
 import java.util.List;
 

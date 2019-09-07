@@ -1,12 +1,8 @@
 package com.java.quartz.utils;
 
-import org.springframework.util.ResourceUtils;
-
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class FfmpegUtil {
 

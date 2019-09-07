@@ -2,10 +2,7 @@ package com.java.system.secutity;
 
 import com.java.common.utils.StringUtil;
 import com.java.model.domain.Admin;
-import com.java.system.config.ShiroConfig;
-import com.java.system.redis.JWTRedisDAO;
 import net.sf.json.JSONObject;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.Session;
@@ -14,13 +11,10 @@ import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.crazycake.shiro.RedisCacheManager;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Deque;

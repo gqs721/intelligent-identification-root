@@ -3,30 +3,113 @@ package com.java.quartz.utils;
 import com.java.common.utils.DateUtil;
 import com.java.common.utils.File2CodeUtil;
 import com.java.common.utils.HttpRequestUtils;
-import com.java.common.utils.StringUtil;
-import com.java.model.dao.IdentificationLibraryMapper;
-import com.java.model.domain.AlarmRecord;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.bytedeco.javacpp.avformat;
+import org.bytedeco.javacpp.avcodec;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
+import org.bytedeco.javacv.Frame;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TestUtil {
 
+    /**
+     * Socket客户端
+     */
+    public static void main(String[] args) throws Exception {
+        try {
 
-    public static void main(String[] args){
+            File file = new File("D:\\JAVA\\tomcat-8.5.43\\webapps\\video\\TopEyeVideo_20190626113520.mp4");
+            InputStream inputStream = new FileInputStream(file);
+
+//                InputStream inputStream = socket.getInputStream();// 获取一个输入流，接收服务端的信息
+                String outputFile = "rtmp://192.168.1.240:1935/live/222";
+                frameRecord(inputStream, outputFile, 1);
+//            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static final ExecutorService executorFixed = Executors.newFixedThreadPool(2);
+
+    /** 
+          * 按帧录制视频 
+          *  
+          * @param inputFile-该地址可以是网络直播/录播地址，也可以是远程/本地文件路径 
+          * @param outputFile 
+          *            -该地址只能是文件地址，如果使用该方法推送流媒体服务器会报错，原因是没有设置编码格式 
+          * @throws FrameGrabber.Exception 
+          * @throws FrameRecorder.Exception 
+          * @throws org.bytedeco.javacv.FrameRecorder.Exception 
+          */
+    public static void frameRecord(InputStream inputFile, String outputFile, int audioChannel) throws Exception {
+        boolean isStart=true;//该变量建议设置为全局控制变量，用于控制录制结束  
+        // 获取视频源  
+        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inputFile);
+//        grabber.setOption("rtsp_transport", "tcp");
+        // 流媒体输出地址，分辨率（长，高），是否录制音频（0:不录制/1:录制）  
+        FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(outputFile, 640, 480, audioChannel);
+        recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+        recorder.setFormat("flv");
+        recorder.setFrameRate(25);
+        // 开始取视频源  
+        executorFixed.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    recordByFrame(grabber, recorder, isStart);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+    private static void recordByFrame(FFmpegFrameGrabber grabber, FFmpegFrameRecorder recorder, Boolean status) throws Exception {
+        try {//建议在线程中使用该方法  
+            grabber.start();
+            recorder.start();
+            Frame frame =null;
+            int i = 0;
+            while (status&& (frame = grabber.grabFrame()) != null) {
+                System.out.println("开始推送==="+i);
+//                Thread.sleep(25);
+                recorder.record(frame);
+                i++;
+            }
+            recorder.stop();
+            grabber.stop();
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (grabber != null) {
+                grabber.stop();
+            }
+            if(recorder != null){
+                recorder.stop();
+            }
+        }
+    }
+
+
+
+
+    public static void main1(String[] args){
 //        initTimedTask3();
 //        pushWeixin();
         Date time1= new Date();

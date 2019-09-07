@@ -9,17 +9,16 @@ import com.java.common.exceptions.RoleNotExistException;
 import com.java.common.result.PageResult;
 import com.java.common.result.RestResult;
 import com.java.common.result.ResultUtils;
-import com.java.common.utils.DateUtil;
-import com.java.common.utils.EncryptUtils;
-import com.java.common.utils.JWTUtils;
-import com.java.common.utils.StringUtil;
+import com.java.common.utils.*;
 import com.java.model.dao.AdminMapper;
 import com.java.model.dao.AdminRoleMapper;
 import com.java.model.dao.RoleMapper;
 import com.java.model.domain.Admin;
 import com.java.model.domain.AdminRole;
+import com.java.model.domain.Role;
 import com.java.system.redis.JWTRedisDAO;
 import com.java.system.service.AdminService;
+import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.DisabledAccountException;
@@ -29,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.util.*;
 
 /**
@@ -82,6 +79,7 @@ public class AdminServiceImpl implements AdminService {
             UsernamePasswordToken token = new UsernamePasswordToken(account, password);
             Subject subject = SecurityUtils.getSubject();
             subject.login(token);
+            subject.getSession().setTimeout(-1000l);
         } catch (DisabledAccountException e) {
             return ResultUtils.error(ResultCodeEnum.USER_BAN.getCode(),ResultCodeEnum.USER_BAN.getMsg());
         } catch (AuthenticationException e) {
@@ -109,6 +107,7 @@ public class AdminServiceImpl implements AdminService {
         // 修改最后登录时间
         Admin a = new Admin();
         a.setId(admin.getId());
+        a.setLoginNum(admin.getLoginNum() + 1);
         a.setLastLoginTime(DateUtil.getCurrentDate());
         adminMapper.updateByPrimaryKeySelective(a);
 
@@ -141,13 +140,15 @@ public class AdminServiceImpl implements AdminService {
             return ResultUtils.error(ResultCodeEnum.EMAIL_EXIST.getCode(),ResultCodeEnum.EMAIL_EXIST.getMsg());
         }
 
-        // 添加权限管理员时才验证角色是否存在
-//        if(admin.getAdminType() == 3) {
-//            Role role = roleMapper.selectByPrimaryKey(admin.getRoleId());
-//            if (null == role) {
-//                throw new RoleNotExistException(ResultCodeEnum.ROLE_NOT_FOUND.getCode(), ResultCodeEnum.ROLE_NOT_FOUND.getMsg());
-//            }
-//        }
+        // 添加子账号时才验证角色是否存在
+        if(admin.getUserType() != 1) {
+            Role role = roleMapper.selectByPrimaryKey(admin.getRoleId());
+            if (null == role) {
+                throw new RoleNotExistException(ResultCodeEnum.ROLE_NOT_FOUND.getCode(), ResultCodeEnum.ROLE_NOT_FOUND.getMsg());
+            }
+        }
+
+
 
         Date date = DateUtil.getCurrentDate();
 
@@ -161,16 +162,34 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException();
         }
 
-//        if(admin.getAdminType() == 3) {
-//            // 持久化 用户角色关联信息
-//            AdminRole adminRole = formatAdminRole(admin, admin.getId(), date);
-//            adminRoleMapper.insertSelective(adminRole);
-//        }
+        // 只有二级用户才能生成二维码
+        if(admin.getUserType() == 2) {
+            JSONObject json = new JSONObject();
+            json.put("userId", admin.getId());
+            json.put("companyName", admin.getCompanyName());
+
+            String fileName = "qrCode_" + admin.getId() + ".jpg";
+
+            String qrCodeUrl = GenerateQRCodeUtil.generateQR(json.toString(), System.getProperty("user.dir") + "/qr_code_image", fileName);
+
+            if(StringUtil.isNotNull(qrCodeUrl)) {
+                // 设置二维码路径
+                admin.setQrCode("/image/qr_code_image/" + fileName);
+                adminMapper.updateByPrimaryKeySelective(admin);
+            }
+        }
+
+
+        if(admin.getUserType() != 1) {
+            // 持久化 用户角色关联信息
+            AdminRole adminRole = formatAdminRole(admin, admin.getId(), date);
+            adminRoleMapper.insertSelective(adminRole);
+        }
 
         // 处理 返回特殊内容
         admin.setPassword(null);
         admin.setSalt(null);
-        return ResultUtils.success("注册成功，等待审核");
+        return ResultUtils.success("保存成功");
     }
 
     // 暂时没用
@@ -246,7 +265,7 @@ public class AdminServiceImpl implements AdminService {
 
         List<Integer> roleIds = adminRoleMapper.getAdminRoles(admin.getId());
 
-//        if(admin.getAdminType() == 3) {
+        if(admin.getUserType() != 1) {
             // 删除之前 管理员角色关联信息
             adminRoleMapper.deleteByAdminId(admin.getId());
 
@@ -263,7 +282,7 @@ public class AdminServiceImpl implements AdminService {
                     }
                 }
             }
-//        }
+        }
 
         return ResultUtils.success("编辑成功");
     }
@@ -274,7 +293,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public RestResult listAdmin(String keyword, Integer userType, Integer pageNum, Integer pageSize) {
+    public RestResult listAdmin(String keyword, Integer userType, Integer userId, Integer pageNum, Integer pageSize) {
 
         int n = pageNum == 1 ? pageNum = 0 : (pageNum = (pageNum - 1) * pageSize);
 
@@ -282,6 +301,11 @@ public class AdminServiceImpl implements AdminService {
         Map domainMap = new HashMap();
         domainMap.put(ParamConstant.KEY_WORD,keyword);
         domainMap.put("userType",userType);
+        if(userType == 3){
+            domainMap.put("userId", userId);
+        }else{
+            domainMap.put("userId", 0);
+        }
         domainMap.put(ParamConstant.PAGE_SIZE,pageSize);
         domainMap.put(ParamConstant.PAGE_NUM,pageNum);
 
@@ -376,8 +400,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public Admin findByUserName(String userName) {
+        Admin admin = adminMapper.getByAuthenticatorUserName(userName);
+        return admin;
+    }
+
+    @Override
     public RestResult resetPassword(String userName, String newPassword) {
-        Admin admin = adminMapper.selectByUserName(userName);
+        Admin admin = adminMapper.getByAuthenticatorUserName(userName);
         if(admin == null){
             return ResultUtils.error(1,"用户名输入错误");
         }

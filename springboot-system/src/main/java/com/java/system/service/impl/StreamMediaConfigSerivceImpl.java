@@ -4,9 +4,9 @@ import com.java.common.constants.ParamConstant;
 import com.java.common.result.PageResult;
 import com.java.common.result.RestResult;
 import com.java.common.result.ResultUtils;
-import com.java.model.dao.AdminMapper;
+import com.java.model.dao.DeviceConfigMapper;
 import com.java.model.dao.StreamMediaConfigMapper;
-import com.java.model.domain.ServerConfig;
+import com.java.model.domain.DeviceConfig;
 import com.java.model.domain.StreamMediaConfig;
 import com.java.system.redis.JWTRedisDAO;
 import com.java.system.service.StreamMediaConfigService;
@@ -31,7 +31,7 @@ public class StreamMediaConfigSerivceImpl implements StreamMediaConfigService {
     private StreamMediaConfigMapper streamMediaConfigMapper;
 
     @Autowired
-    private AdminMapper adminMapper;
+    private DeviceConfigMapper deviceConfigMapper;
 
     @Autowired
     private JWTRedisDAO jwtRedisDAO;
@@ -102,7 +102,12 @@ public class StreamMediaConfigSerivceImpl implements StreamMediaConfigService {
 
     @Override
     public RestResult findByUserId(Integer userId){
-        return ResultUtils.success(streamMediaConfigMapper.findByUserId(userId));
+        List<StreamMediaConfig> smcList = streamMediaConfigMapper.findByUserId(userId);
+        for (StreamMediaConfig smc : smcList){
+            List<DeviceConfig> dcList = deviceConfigMapper.findBySipId(smc.getId());
+            smc.setAccessRouteStr(dcList.size() + "/" + smc.getAccessRoute());
+        }
+        return ResultUtils.success(smcList);
     }
 
 }

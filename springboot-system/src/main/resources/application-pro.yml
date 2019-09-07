@@ -59,3 +59,9 @@ server:
 # 开启swagger
 swagger:
   enabled: false
+
+config:
+  # 用户单点登录模式，false踢出之前登录的/true踢出之后登录的用户
+  kickout_after: false
+  # 用户单点登录，同一账号最大会话数
+  max_session: 1

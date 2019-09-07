@@ -44,6 +44,12 @@ spring:
       max-wait: 100
       min-idle: 1
 
+  #资源映射路径为/image/**，使用url访问的请求路径
+  mvc:
+    static-path-pattern: /image/**
+  resources:
+    static-locations: file:D:\JAVA
+
 ## Mybatis 配置
 mybatis:
   mapper-locations: classpath*:com/java/model/mapper/**/*Mapper.xml
@@ -59,3 +65,9 @@ server:
 # 开启swagger
 swagger:
   enabled: true
+
+config:
+  # 用户单点登录模式，false踢出之前登录的/true踢出之后登录的用户
+  kickout_after: false
+  # 用户单点登录，同一账号最大会话数
+  max_session: 1

@@ -60,6 +60,12 @@ public class ServerConfig {
     private String identificationType;
 
     /**
+     * 列表显示
+     */
+    @ApiModelProperty(value="列表显示，无需添加")
+    private String identificationTypeStr;
+
+    /**
      * 识别路数
      */
     @ApiModelProperty(value="识别路数")
@@ -159,6 +165,14 @@ public class ServerConfig {
 
     public void setIdentificationType(String identificationType) {
         this.identificationType = identificationType == null ? null : identificationType.trim();
+    }
+
+    public String getIdentificationTypeStr() {
+        return identificationTypeStr;
+    }
+
+    public void setIdentificationTypeStr(String identificationTypeStr) {
+        this.identificationTypeStr = identificationTypeStr;
     }
 
     public String getIdentifyTheImlet() {

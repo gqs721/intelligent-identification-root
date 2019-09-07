@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.PushWeixinMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.PushWeixin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="wx_photo" jdbcType="VARCHAR" property="wxPhoto" />
+    <result column="wx_name" jdbcType="VARCHAR" property="wxName" />
+    <result column="wx_phone" jdbcType="VARCHAR" property="wxPhone" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="push_type" jdbcType="VARCHAR" property="pushType" />
+    <result column="audit_status" jdbcType="INTEGER" property="auditStatus" />
+    <result column="is_admin" jdbcType="INTEGER" property="isAdmin" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, company_name, nick_name, wx_photo, wx_name, wx_phone, open_id, push_type, 
+    audit_status, is_admin, status, del_status, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_push_weixin
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 自定义 -->
+  <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_push_weixin
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_push_weixin
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.PushWeixin">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_weixin (user_id, company_name, nick_name, 
+      wx_photo, wx_name, wx_phone, 
+      open_id, push_type, audit_status, 
+      is_admin, status, del_status, 
+      create_time, update_time)
+    values (#{userId,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{wxPhoto,jdbcType=VARCHAR}, #{wxName,jdbcType=VARCHAR}, #{wxPhone,jdbcType=VARCHAR}, 
+      #{openId,jdbcType=VARCHAR}, #{pushType,jdbcType=VARCHAR}, #{auditStatus,jdbcType=INTEGER}, 
+      #{isAdmin,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.PushWeixin">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_weixin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="wxPhoto != null">
+        wx_photo,
+      </if>
+      <if test="wxName != null">
+        wx_name,
+      </if>
+      <if test="wxPhone != null">
+        wx_phone,
+      </if>
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="pushType != null">
+        push_type,
+      </if>
+      <if test="auditStatus != null">
+        audit_status,
+      </if>
+      <if test="isAdmin != null">
+        is_admin,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="wxPhoto != null">
+        #{wxPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="wxName != null">
+        #{wxName,jdbcType=VARCHAR},
+      </if>
+      <if test="wxPhone != null">
+        #{wxPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="pushType != null">
+        #{pushType,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null">
+        #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="isAdmin != null">
+        #{isAdmin,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.PushWeixin">
+    update bh_push_weixin
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="wxPhoto != null">
+        wx_photo = #{wxPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="wxName != null">
+        wx_name = #{wxName,jdbcType=VARCHAR},
+      </if>
+      <if test="wxPhone != null">
+        wx_phone = #{wxPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="pushType != null">
+        push_type = #{pushType,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null">
+        audit_status = #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="isAdmin != null">
+        is_admin = #{isAdmin,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.PushWeixin">
+    update bh_push_weixin
+    set user_id = #{userId,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      wx_photo = #{wxPhoto,jdbcType=VARCHAR},
+      wx_name = #{wxName,jdbcType=VARCHAR},
+      wx_phone = #{wxPhone,jdbcType=VARCHAR},
+      open_id = #{openId,jdbcType=VARCHAR},
+      push_type = #{pushType,jdbcType=VARCHAR},
+      audit_status = #{auditStatus,jdbcType=INTEGER},
+      is_admin = #{isAdmin,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- ********* 自定义 *********** -->
+  <resultMap id="PushWeixinResultMap" type="java.util.HashMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="wx_photo" jdbcType="VARCHAR" property="wxPhoto" />
+    <result column="wx_name" jdbcType="VARCHAR" property="wxName" />
+    <result column="wx_phone" jdbcType="VARCHAR" property="wxPhone" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="push_type" jdbcType="VARCHAR" property="pushType" />
+    <result column="audit_status" jdbcType="INTEGER" property="auditStatus" />
+    <result column="is_admin" jdbcType="INTEGER" property="isAdmin" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <!-- 批量删除 逻辑删除-->
+  <update id="deleteBatch" parameterType="java.lang.Integer">
+    update bh_push_weixin
+    set del_status=1
+    where id in
+    <foreach collection="array" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <!-- 微信端通过openId删除个人信息-->
+  <update id="deleteByOpenId" parameterType="java.lang.String">
+    update bh_push_weixin
+    set del_status=1
+    where open_id = #{openId}
+  </update>
+
+  <!-- 数据列表 -->
+  <select id="listPage" parameterType="java.util.HashMap" resultMap="PushWeixinResultMap">
+    select
+    sa.id,
+    sa.user_id,
+    sa.company_name,
+    sa.nick_name,
+    sa.wx_photo,
+    sa.wx_name,
+    sa.wx_phone,
+    sa.open_id,
+    sa.push_type,
+    sa.audit_status,
+    sa.is_admin,
+    sa.status,
+    sa.del_status,
+    sa.create_time,
+    sa.update_time
+    from bh_push_weixin as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.user_id = #{userId}
+      <if test="auditStatus != -1">
+        AND sa.audit_status = #{auditStatus}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        AND ( sa.wx_name LIKE CONCAT('%', #{keyword}, '%') or
+        sa.wx_phone LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </trim>
+    order by sa.create_time DESC
+    <if test="pageNum != null and pageSize != null">
+      LIMIT #{pageNum},#{pageSize}
+    </if>
+  </select>
+
+  <!-- 分页数量统计 -->
+  <select id="countPage" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select
+    count(1)
+    from bh_push_weixin as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.user_id = #{userId}
+      <if test="auditStatus != -1">
+        AND sa.audit_status = #{auditStatus}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        AND ( sa.wx_name LIKE CONCAT('%', #{keyword}, '%') or
+        sa.wx_phone LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </trim>
+  </select>
+
+  <!-- 保存微信推送类型关系 -->
+  <insert id="savePushWxType">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_push_wx_type (push_id, push_type, device_id, create_time)
+    values (#{pushId,jdbcType=INTEGER}, #{pushType,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER},
+    #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <delete id="deletePushWxTypeByPushId">
+    delete from bh_push_wx_type where push_id = #{pushId}
+  </delete>
+
+  <!-- 通过识别类型和设备id查询需要推送的微信用户 -->
+  <select id="selectByTypeAndDeviceId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_push_weixin where id in (select push_id from bh_push_wx_type where push_type = #{pushType} and device_id = #{deviceId}) and audit_status = 1 and status = 0 and del_status = 0
+  </select>
+</mapper>

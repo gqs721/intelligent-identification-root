@@ -2,7 +2,6 @@ package com.java.model.dao;
 
 import com.java.model.domain.DeviceConfig;
 import com.java.model.domain.DeviceServer;
-import com.java.model.domain.ServerConfig;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -54,4 +53,17 @@ public interface DeviceConfigMapper {
     List<DeviceServer> findByDeviceId(Integer deviceId);
 
     List<DeviceConfig> findAll();
+
+    List<DeviceConfig> findBySipId(Integer sipId);
+
+    /**
+     * 通过分组id获取设备信息
+     * @param groupId
+     * @return
+     */
+    List<DeviceConfig> findByGroupId(int groupId);
+
+    List<DeviceConfig> findNoNvrDevice();
+
+    List<DeviceConfig> findNvrDevice();
 }

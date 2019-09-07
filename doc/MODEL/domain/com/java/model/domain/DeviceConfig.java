@@ -16,22 +16,28 @@ public class DeviceConfig {
     private Integer userId;
 
     /**
-     * 
+     * 流媒体id
      */
-    @ApiModelProperty(value="")
-    private Integer serverId;
+    @ApiModelProperty(value="流媒体id")
+    private Integer streamMediaId;
 
     /**
-     * 
+     * NVRid
      */
-    @ApiModelProperty(value="")
-    private Integer streamMediaId;
+    @ApiModelProperty(value="NVRid")
+    private Integer nvrId;
 
     /**
      * 设备号
      */
     @ApiModelProperty(value="设备号")
     private String deviceNumber;
+
+    /**
+     * 设备通道
+     */
+    @ApiModelProperty(value="设备通道")
+    private String deviceChannel;
 
     /**
      * 设备名称
@@ -58,10 +64,22 @@ public class DeviceConfig {
     private String manufacturer;
 
     /**
+     * 型号
+     */
+    @ApiModelProperty(value="型号")
+    private String deviceModel;
+
+    /**
      * 分辨率
      */
     @ApiModelProperty(value="分辨率")
     private String resolutionRatio;
+
+    /**
+     * 码率
+     */
+    @ApiModelProperty(value="码率")
+    private Integer codeRate;
 
     /**
      * 访问地址
@@ -70,16 +88,34 @@ public class DeviceConfig {
     private String visitAddress;
 
     /**
+     * 访问端口
+     */
+    @ApiModelProperty(value="访问端口")
+    private Integer visitPort;
+
+    /**
      * 识别类型
      */
     @ApiModelProperty(value="识别类型")
     private String distinguishType;
 
     /**
-     * 服务器ip
+     * 设备类型，1：网络摄像头，2：NVR设备
      */
-    @ApiModelProperty(value="服务器ip")
-    private String serverIp;
+    @ApiModelProperty(value="设备类型，1：网络摄像头，2：NVR设备")
+    private Integer deviceType;
+
+    /**
+     * 流媒体服务ip
+     */
+    @ApiModelProperty(value="流媒体服务ip")
+    private String sipServerIp;
+
+    /**
+     * NVRid
+     */
+    @ApiModelProperty(value="NVRid")
+    private String nvrIp;
 
     /**
      * 状态，0：启用，1：禁用
@@ -99,6 +135,12 @@ public class DeviceConfig {
     @ApiModelProperty(value="创建时间")
     private Date createTime;
 
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty(value="修改时间")
+    private Date updateTime;
+
     public Integer getId() {
         return id;
     }
@@ -115,14 +157,6 @@ public class DeviceConfig {
         this.userId = userId;
     }
 
-    public Integer getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(Integer serverId) {
-        this.serverId = serverId;
-    }
-
     public Integer getStreamMediaId() {
         return streamMediaId;
     }
@@ -131,12 +165,28 @@ public class DeviceConfig {
         this.streamMediaId = streamMediaId;
     }
 
+    public Integer getNvrId() {
+        return nvrId;
+    }
+
+    public void setNvrId(Integer nvrId) {
+        this.nvrId = nvrId;
+    }
+
     public String getDeviceNumber() {
         return deviceNumber;
     }
 
     public void setDeviceNumber(String deviceNumber) {
         this.deviceNumber = deviceNumber == null ? null : deviceNumber.trim();
+    }
+
+    public String getDeviceChannel() {
+        return deviceChannel;
+    }
+
+    public void setDeviceChannel(String deviceChannel) {
+        this.deviceChannel = deviceChannel == null ? null : deviceChannel.trim();
     }
 
     public String getDeviceName() {
@@ -171,12 +221,28 @@ public class DeviceConfig {
         this.manufacturer = manufacturer == null ? null : manufacturer.trim();
     }
 
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel == null ? null : deviceModel.trim();
+    }
+
     public String getResolutionRatio() {
         return resolutionRatio;
     }
 
     public void setResolutionRatio(String resolutionRatio) {
         this.resolutionRatio = resolutionRatio == null ? null : resolutionRatio.trim();
+    }
+
+    public Integer getCodeRate() {
+        return codeRate;
+    }
+
+    public void setCodeRate(Integer codeRate) {
+        this.codeRate = codeRate;
     }
 
     public String getVisitAddress() {
@@ -187,6 +253,14 @@ public class DeviceConfig {
         this.visitAddress = visitAddress == null ? null : visitAddress.trim();
     }
 
+    public Integer getVisitPort() {
+        return visitPort;
+    }
+
+    public void setVisitPort(Integer visitPort) {
+        this.visitPort = visitPort;
+    }
+
     public String getDistinguishType() {
         return distinguishType;
     }
@@ -195,12 +269,28 @@ public class DeviceConfig {
         this.distinguishType = distinguishType == null ? null : distinguishType.trim();
     }
 
-    public String getServerIp() {
-        return serverIp;
+    public Integer getDeviceType() {
+        return deviceType;
     }
 
-    public void setServerIp(String serverIp) {
-        this.serverIp = serverIp == null ? null : serverIp.trim();
+    public void setDeviceType(Integer deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public String getSipServerIp() {
+        return sipServerIp;
+    }
+
+    public void setSipServerIp(String sipServerIp) {
+        this.sipServerIp = sipServerIp == null ? null : sipServerIp.trim();
+    }
+
+    public String getNvrIp() {
+        return nvrIp;
+    }
+
+    public void setNvrIp(String nvrIp) {
+        this.nvrIp = nvrIp == null ? null : nvrIp.trim();
     }
 
     public Integer getStatus() {
@@ -227,6 +317,14 @@ public class DeviceConfig {
         this.createTime = createTime;
     }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -235,20 +333,27 @@ public class DeviceConfig {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
-        sb.append(", serverId=").append(serverId);
         sb.append(", streamMediaId=").append(streamMediaId);
+        sb.append(", nvrId=").append(nvrId);
         sb.append(", deviceNumber=").append(deviceNumber);
+        sb.append(", deviceChannel=").append(deviceChannel);
         sb.append(", deviceName=").append(deviceName);
         sb.append(", deviceAccount=").append(deviceAccount);
         sb.append(", devicePassword=").append(devicePassword);
         sb.append(", manufacturer=").append(manufacturer);
+        sb.append(", deviceModel=").append(deviceModel);
         sb.append(", resolutionRatio=").append(resolutionRatio);
+        sb.append(", codeRate=").append(codeRate);
         sb.append(", visitAddress=").append(visitAddress);
+        sb.append(", visitPort=").append(visitPort);
         sb.append(", distinguishType=").append(distinguishType);
-        sb.append(", serverIp=").append(serverIp);
+        sb.append(", deviceType=").append(deviceType);
+        sb.append(", sipServerIp=").append(sipServerIp);
+        sb.append(", nvrIp=").append(nvrIp);
         sb.append(", status=").append(status);
         sb.append(", delStatus=").append(delStatus);
         sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }

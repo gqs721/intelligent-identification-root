@@ -2,7 +2,6 @@ package com.java.model.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,6 +11,12 @@ public class Admin implements Serializable {
      */
     @ApiModelProperty(value="主键id")
     private Integer id;
+
+    /**
+     * 父用户id
+     */
+    @ApiModelProperty(value="父用户id")
+    private Integer userId;
 
     /**
      * 用户名
@@ -80,6 +85,24 @@ public class Admin implements Serializable {
     private Integer userType;
 
     /**
+     * 二维码
+     */
+    @ApiModelProperty(value="二维码，后台自动生成")
+    private String qrCode;
+
+    /**
+     * 登录次数
+     */
+    @ApiModelProperty(value="登录次数")
+    private Integer loginNum;
+
+    /**
+     * 备注
+     */
+    @ApiModelProperty(value="备注")
+    private String remark;
+
+    /**
      * 状态，0：启用，1：禁用
      */
     @ApiModelProperty(value="状态，0：启用，1：禁用")
@@ -113,6 +136,14 @@ public class Admin implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -201,6 +232,30 @@ public class Admin implements Serializable {
 
     public void setUserType(Integer userType) {
         this.userType = userType;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public Integer getLoginNum() {
+        return loginNum;
+    }
+
+    public void setLoginNum(Integer loginNum) {
+        this.loginNum = loginNum;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public Integer getStatus() {

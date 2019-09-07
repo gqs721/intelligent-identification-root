@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.NvrConfigMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.NvrConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="nvr_number" jdbcType="VARCHAR" property="nvrNumber" />
+    <result column="nvr_name" jdbcType="VARCHAR" property="nvrName" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="nvr_account" jdbcType="VARCHAR" property="nvrAccount" />
+    <result column="nvr_password" jdbcType="VARCHAR" property="nvrPassword" />
+    <result column="nvr_model" jdbcType="VARCHAR" property="nvrModel" />
+    <result column="nvr_ip" jdbcType="VARCHAR" property="nvrIp" />
+    <result column="nvr_port" jdbcType="INTEGER" property="nvrPort" />
+    <result column="nvr_channel_num" jdbcType="INTEGER" property="nvrChannelNum" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, company_name, nvr_number, nvr_name, manufacturer, nvr_account, nvr_password, 
+    nvr_model, nvr_ip, nvr_port, nvr_channel_num, status, del_status, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_nvr_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_nvr_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.NvrConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_nvr_config (user_id, company_name, nvr_number, 
+      nvr_name, manufacturer, nvr_account, 
+      nvr_password, nvr_model, nvr_ip, 
+      nvr_port, nvr_channel_num, status, 
+      del_status, create_time, update_time
+      )
+    values (#{userId,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{nvrNumber,jdbcType=VARCHAR}, 
+      #{nvrName,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, #{nvrAccount,jdbcType=VARCHAR}, 
+      #{nvrPassword,jdbcType=VARCHAR}, #{nvrModel,jdbcType=VARCHAR}, #{nvrIp,jdbcType=VARCHAR}, 
+      #{nvrPort,jdbcType=INTEGER}, #{nvrChannelNum,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.NvrConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_nvr_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="nvrNumber != null">
+        nvr_number,
+      </if>
+      <if test="nvrName != null">
+        nvr_name,
+      </if>
+      <if test="manufacturer != null">
+        manufacturer,
+      </if>
+      <if test="nvrAccount != null">
+        nvr_account,
+      </if>
+      <if test="nvrPassword != null">
+        nvr_password,
+      </if>
+      <if test="nvrModel != null">
+        nvr_model,
+      </if>
+      <if test="nvrIp != null">
+        nvr_ip,
+      </if>
+      <if test="nvrPort != null">
+        nvr_port,
+      </if>
+      <if test="nvrChannelNum != null">
+        nvr_channel_num,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrNumber != null">
+        #{nvrNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrName != null">
+        #{nvrName,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrAccount != null">
+        #{nvrAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrPassword != null">
+        #{nvrPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrModel != null">
+        #{nvrModel,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrIp != null">
+        #{nvrIp,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrPort != null">
+        #{nvrPort,jdbcType=INTEGER},
+      </if>
+      <if test="nvrChannelNum != null">
+        #{nvrChannelNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.NvrConfig">
+    update bh_nvr_config
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrNumber != null">
+        nvr_number = #{nvrNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrName != null">
+        nvr_name = #{nvrName,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrAccount != null">
+        nvr_account = #{nvrAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrPassword != null">
+        nvr_password = #{nvrPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrModel != null">
+        nvr_model = #{nvrModel,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrIp != null">
+        nvr_ip = #{nvrIp,jdbcType=VARCHAR},
+      </if>
+      <if test="nvrPort != null">
+        nvr_port = #{nvrPort,jdbcType=INTEGER},
+      </if>
+      <if test="nvrChannelNum != null">
+        nvr_channel_num = #{nvrChannelNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.NvrConfig">
+    update bh_nvr_config
+    set user_id = #{userId,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      nvr_number = #{nvrNumber,jdbcType=VARCHAR},
+      nvr_name = #{nvrName,jdbcType=VARCHAR},
+      manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      nvr_account = #{nvrAccount,jdbcType=VARCHAR},
+      nvr_password = #{nvrPassword,jdbcType=VARCHAR},
+      nvr_model = #{nvrModel,jdbcType=VARCHAR},
+      nvr_ip = #{nvrIp,jdbcType=VARCHAR},
+      nvr_port = #{nvrPort,jdbcType=INTEGER},
+      nvr_channel_num = #{nvrChannelNum,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

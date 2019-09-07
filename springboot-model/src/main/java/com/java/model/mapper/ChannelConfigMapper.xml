@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.model.dao.ChannelConfigMapper">
+  <resultMap id="BaseResultMap" type="com.java.model.domain.ChannelConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="nvr_id" jdbcType="INTEGER" property="nvrId" />
+    <result column="sip_id" jdbcType="INTEGER" property="sipId" />
+    <result column="nvr_number" jdbcType="VARCHAR" property="nvrNumber" />
+    <result column="channel_number" jdbcType="VARCHAR" property="channelNumber" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+    <result column="channel_account" jdbcType="VARCHAR" property="channelAccount" />
+    <result column="channel_password" jdbcType="VARCHAR" property="channelPassword" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="channel_model" jdbcType="VARCHAR" property="channelModel" />
+    <result column="channel_ip" jdbcType="VARCHAR" property="channelIp" />
+    <result column="channel_port" jdbcType="INTEGER" property="channelPort" />
+    <result column="resolution_ratio" jdbcType="VARCHAR" property="resolutionRatio" />
+    <result column="code_rate" jdbcType="INTEGER" property="codeRate" />
+    <result column="distinguish_type" jdbcType="VARCHAR" property="distinguishType" />
+    <result column="sip_ip" jdbcType="VARCHAR" property="sipIp" />
+    <result column="online_status" jdbcType="VARCHAR" property="onlineStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, nvr_id, sip_id, nvr_number, channel_number, channel_name, channel_account, channel_password, 
+    manufacturer, channel_model, channel_ip, channel_port, resolution_ratio, code_rate, 
+    distinguish_type, sip_ip, online_status, status, del_status, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bh_channel_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 自定义 -->
+  <select id="findByNvrId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_channel_config
+    where del_status = 0 and nvr_id = #{nvrId,jdbcType=INTEGER}
+  </select>
+  <select id="findByDeviceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bh_channel_config
+    where device_id = #{deviceId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bh_channel_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.java.model.domain.ChannelConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_channel_config (nvr_id, sip_id, nvr_number, 
+      channel_number, channel_name, channel_account, 
+      channel_password, manufacturer, channel_model, 
+      channel_ip, channel_port, resolution_ratio, 
+      code_rate, distinguish_type, sip_ip,
+      online_status, status, del_status, create_time,
+      update_time)
+    values (#{nvrId,jdbcType=INTEGER}, #{sipId,jdbcType=INTEGER}, #{nvrNumber,jdbcType=VARCHAR}, 
+      #{channelNumber,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR}, #{channelAccount,jdbcType=VARCHAR}, 
+      #{channelPassword,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, #{channelModel,jdbcType=VARCHAR}, 
+      #{channelIp,jdbcType=VARCHAR}, #{channelPort,jdbcType=INTEGER}, #{resolutionRatio,jdbcType=VARCHAR}, 
+      #{codeRate,jdbcType=INTEGER}, #{distinguishType,jdbcType=VARCHAR}, #{sipIp,jdbcType=VARCHAR},
+      #{onlineStatus,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.model.domain.ChannelConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into bh_channel_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="nvrId != null">
+        nvr_id,
+      </if>
+      <if test="sipId != null">
+        sip_id,
+      </if>
+      <if test="nvrNumber != null">
+        nvr_number,
+      </if>
+      <if test="channelNumber != null">
+        channel_number,
+      </if>
+      <if test="channelName != null">
+        channel_name,
+      </if>
+      <if test="channelAccount != null">
+        channel_account,
+      </if>
+      <if test="channelPassword != null">
+        channel_password,
+      </if>
+      <if test="manufacturer != null">
+        manufacturer,
+      </if>
+      <if test="channelModel != null">
+        channel_model,
+      </if>
+      <if test="channelIp != null">
+        channel_ip,
+      </if>
+      <if test="channelPort != null">
+        channel_port,
+      </if>
+      <if test="resolutionRatio != null">
+        resolution_ratio,
+      </if>
+      <if test="codeRate != null">
+        code_rate,
+      </if>
+      <if test="distinguishType != null">
+        distinguish_type,
+      </if>
+      <if test="sipIp != null">
+        sip_ip,
+      </if>
+      <if test="onlineStatus != null">
+        online_status,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="nvrId != null">
+        #{nvrId,jdbcType=INTEGER},
+      </if>
+      <if test="sipId != null">
+        #{sipId,jdbcType=INTEGER},
+      </if>
+      <if test="nvrNumber != null">
+        #{nvrNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="channelNumber != null">
+        #{channelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null">
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelAccount != null">
+        #{channelAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPassword != null">
+        #{channelPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="channelModel != null">
+        #{channelModel,jdbcType=VARCHAR},
+      </if>
+      <if test="channelIp != null">
+        #{channelIp,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPort != null">
+        #{channelPort,jdbcType=INTEGER},
+      </if>
+      <if test="resolutionRatio != null">
+        #{resolutionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRate != null">
+        #{codeRate,jdbcType=INTEGER},
+      </if>
+      <if test="distinguishType != null">
+        #{distinguishType,jdbcType=VARCHAR},
+      </if>
+      <if test="sipIp != null">
+        #{sipIp,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineStatus != null">
+        #{onlineStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.model.domain.ChannelConfig">
+    update bh_channel_config
+    <set>
+      <if test="nvrId != null">
+        nvr_id = #{nvrId,jdbcType=INTEGER},
+      </if>
+      <if test="sipId != null">
+        sip_id = #{sipId,jdbcType=INTEGER},
+      </if>
+      <if test="nvrNumber != null">
+        nvr_number = #{nvrNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="channelNumber != null">
+        channel_number = #{channelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null">
+        channel_name = #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelAccount != null">
+        channel_account = #{channelAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPassword != null">
+        channel_password = #{channelPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="channelModel != null">
+        channel_model = #{channelModel,jdbcType=VARCHAR},
+      </if>
+      <if test="channelIp != null">
+        channel_ip = #{channelIp,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPort != null">
+        channel_port = #{channelPort,jdbcType=INTEGER},
+      </if>
+      <if test="resolutionRatio != null">
+        resolution_ratio = #{resolutionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRate != null">
+        code_rate = #{codeRate,jdbcType=INTEGER},
+      </if>
+      <if test="distinguishType != null">
+        distinguish_type = #{distinguishType,jdbcType=VARCHAR},
+      </if>
+      <if test="sipIp != null">
+        sip_ip = #{sipIp,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineStatus != null">
+        online_status = #{onlineStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.model.domain.ChannelConfig">
+    update bh_channel_config
+    set nvr_id = #{nvrId,jdbcType=INTEGER},
+      sip_id = #{sipId,jdbcType=INTEGER},
+      nvr_number = #{nvrNumber,jdbcType=VARCHAR},
+      channel_number = #{channelNumber,jdbcType=VARCHAR},
+      channel_name = #{channelName,jdbcType=VARCHAR},
+      channel_account = #{channelAccount,jdbcType=VARCHAR},
+      channel_password = #{channelPassword,jdbcType=VARCHAR},
+      manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      channel_model = #{channelModel,jdbcType=VARCHAR},
+      channel_ip = #{channelIp,jdbcType=VARCHAR},
+      channel_port = #{channelPort,jdbcType=INTEGER},
+      resolution_ratio = #{resolutionRatio,jdbcType=VARCHAR},
+      code_rate = #{codeRate,jdbcType=INTEGER},
+      distinguish_type = #{distinguishType,jdbcType=VARCHAR},
+      sip_ip = #{sipIp,jdbcType=VARCHAR},
+      online_status = #{onlineStatus,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- ********* 自定义 *********** -->
+  <resultMap id="ChannelResultMap" type="java.util.HashMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="nvr_id" jdbcType="INTEGER" property="nvrId" />
+    <result column="sip_id" jdbcType="INTEGER" property="sipId" />
+    <result column="nvr_number" jdbcType="VARCHAR" property="nvrNumber" />
+    <result column="channel_number" jdbcType="VARCHAR" property="channelNumber" />
+    <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+    <result column="channel_account" jdbcType="VARCHAR" property="channelAccount" />
+    <result column="channel_password" jdbcType="VARCHAR" property="channelPassword" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="channel_model" jdbcType="VARCHAR" property="channelModel" />
+    <result column="channel_ip" jdbcType="VARCHAR" property="channelIp" />
+    <result column="channel_port" jdbcType="INTEGER" property="channelPort" />
+    <result column="resolution_ratio" jdbcType="VARCHAR" property="resolutionRatio" />
+    <result column="code_rate" jdbcType="INTEGER" property="codeRate" />
+    <result column="distinguish_type" jdbcType="VARCHAR" property="distinguishType" />
+    <result column="sip_ip" jdbcType="VARCHAR" property="sipIp" />
+    <result column="online_status" jdbcType="VARCHAR" property="onlineStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <!-- 批量删除 逻辑删除-->
+  <update id="deleteBatch" parameterType="java.lang.Integer">
+    update bh_channel_config
+    set del_status=1
+    where id in
+    <foreach collection="array" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <!-- 通过设备id批量删除 逻辑删除-->
+  <update id="deleteBatchByDeviceId" parameterType="java.lang.Integer">
+    update bh_channel_config
+    set del_status=1
+    where device_id in
+    <foreach collection="array" index="index" item="item"
+             separator="," open="(" close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <!-- 数据列表 -->
+  <select id="listPage" parameterType="java.util.HashMap" resultMap="ChannelResultMap">
+    select
+    sa.id,
+    sa.nvr_id,
+    sa.sip_id,
+    sa.nvr_number,
+    sa.channel_number,
+    sa.channel_account,
+    sa.channel_password,
+    sa.manufacturer,
+    sa.channel_model,
+    sa.channel_ip,
+    sa.channel_port,
+    sa.resolution_ratio,
+    sa.code_rate,
+    sa.distinguish_type,
+    sa.sip_ip,
+    sa.online_status,
+    sa.status,
+    sa.del_status,
+    sa.create_time,
+    sa.update_time
+    from bh_channel_config as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.nvr_id = #{nvrId}
+      <if test="keyword != null and keyword != ''">
+        AND sa.channel_number = #{keyword}
+      </if>
+    </trim>
+    order by sa.create_time DESC
+    <if test="pageNum != null and pageSize != null">
+      LIMIT #{pageNum},#{pageSize}
+    </if>
+  </select>
+
+  <!-- 分页数量统计 -->
+  <select id="countPage" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select
+    count(1)
+    from bh_channel_config as sa
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      sa.del_status=0 AND sa.nvr_id = #{nvrId}
+      <if test="keyword != null and keyword != ''">
+        AND sa.channel_number = #{keyword}
+      </if>
+    </trim>
+  </select>
+</mapper>

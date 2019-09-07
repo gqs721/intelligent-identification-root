@@ -4,15 +4,12 @@ import com.java.common.enums.ResultCodeEnum;
 import com.java.common.result.RestResult;
 import com.java.common.result.ResultUtils;
 import com.java.common.utils.MailUtil;
+import com.java.common.utils.StringUtil;
 import com.java.common.utils.VerifyCodeUtils;
 import com.java.model.domain.Admin;
-import com.java.system.config.ShiroConfig;
-import com.java.system.redis.JWTRedisDAO;
-import com.java.system.secutity.KickoutSessionControlFilter;
 import com.java.system.service.AdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.mail.MessagingException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -146,7 +141,7 @@ public class AdminController {
 
         if(code == null || code.isEmpty() || !verCodeStr.equalsIgnoreCase(code)){
             return ResultUtils.error(1, "验证码错误");
-        } else if((now-past)/1000/60>10){//10分钟
+        } else if((now-past)/1000/60>30){//30分钟
             session.removeAttribute("mailCode");
             session.removeAttribute("mailCodeTime");
             return ResultUtils.error(1, "验证码已过期，重新获取");
@@ -164,14 +159,17 @@ public class AdminController {
      * @param email
      */
     @RequestMapping(value = "/verifyMail",method = RequestMethod.GET)
-    @ApiOperation(value = "验证邮箱是否已注册接口", notes = "验证邮箱是否已注册")
-    public RestResult verifyMail(String email){
-        // 验证邮箱是否注册
-        Admin admin = adminService.findByEmail(email);
+    @ApiOperation(value = "验证账号、邮箱是否正确接口", notes = "验证账号、邮箱是否正确")
+    public RestResult verifyMail(String userName, String email){
+        Admin admin = adminService.findByUserName(userName);
         if(admin == null){
-            return ResultUtils.success("该邮箱未注册");
+            return ResultUtils.error(1, "该账号不存在册");
         }
-        return ResultUtils.error(1,"该邮箱已注册，请更换邮箱");
+        if(StringUtil.CheckIsEqual(admin.getEmail(), email)){
+            return ResultUtils.success("账号邮箱正确，可以获取验证码");
+        }else{
+            return ResultUtils.error(1,"该邮箱无法跟账号对应");
+        }
     }
 
     /**
@@ -239,12 +237,12 @@ public class AdminController {
      * @param result
      * @return
      */
-    @ApiOperation(value = "注册管理员接口", notes = "管理员保存，注册的管理员需要进行审核")
-    @RequestMapping(value = "/registerSave", method = RequestMethod.POST)
-    public RestResult registerSave(Admin admin, BindingResult result) {
-        admin.setUserType(2);
-        return adminService.saveAdmin(admin);
-    }
+//    @ApiOperation(value = "注册管理员接口", notes = "管理员保存，注册的管理员需要进行审核")
+//    @RequestMapping(value = "/registerSave", method = RequestMethod.POST)
+//    public RestResult registerSave(Admin admin, BindingResult result) {
+//        admin.setUserType(2);
+//        return adminService.saveAdmin(admin);
+//    }
 
 
     /**
@@ -256,7 +254,7 @@ public class AdminController {
     @ApiOperation(value = "管理员保存接口", notes = "管理员保存")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public RestResult save(Admin admin, BindingResult result) {
-        admin.setUserType(2);
+//        admin.setUserType(2);
         return adminService.saveAdmin(admin);
     }
 
@@ -367,25 +365,14 @@ public class AdminController {
      * 管理员列表
      * @param map
      */
-    @ApiOperation(value = "获取管理员列表接口", notes = "获取管理员列表，json串参数：keyword：关键字，pageNum:页码，pageSize：条数")
+    @ApiOperation(value = "获取管理员列表接口", notes = "获取管理员列表，json串参数：keyword：关键字，userType：类型2、3，userId: 当前用户id，pageNum:页码，pageSize：条数")
     @RequestMapping(value = "/list",method = RequestMethod.POST)
     public RestResult list(@RequestBody Map map){
         String keyword = (String) map.get("keyword");
-//        Integer userType = (Integer) map.get("userType");
+        Integer userType = (Integer) map.get("userType");
+        Integer userId = (Integer) map.get("userId");
         Integer pageNum = (Integer) map.get("pageNum");
         Integer pageSize = (Integer) map.get("pageSize");
-        return adminService.listAdmin(keyword, 0, pageNum, pageSize);
+        return adminService.listAdmin(keyword, userType, userId, pageNum, pageSize);
     }
-
-
-//    /**
-//     * 通过typeCode获取字典数据
-//     * @param userId
-//     * @return
-//     */
-//    @ApiOperation(value = "获取管理员信息接口", notes = "获取管理员信息")
-//    @RequestMapping(value = "/findDict",method = RequestMethod.GET)
-//    public RestResult findDict( @RequestParam Integer userId){
-//        return adminService.getAdmin(userId);
-//    }
 }

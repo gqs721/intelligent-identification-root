@@ -1,25 +1,17 @@
 package com.java.system.service.impl;
 
-import com.java.common.constants.ParamConstant;
-import com.java.common.result.PageResult;
 import com.java.common.result.RestResult;
 import com.java.common.result.ResultUtils;
-import com.java.common.utils.DateUtil;
 import com.java.common.utils.StringUtil;
 import com.java.model.dao.AlarmRecordMapper;
 import com.java.model.dao.DictDataMapper;
-import com.java.model.dao.DictTypeMapper;
-import com.java.model.dao.IdentificationLibraryMapper;
-import com.java.model.domain.AlarmRecord;
-import com.java.model.domain.DictData;
-import com.java.system.redis.JWTRedisDAO;
-import com.java.system.service.AlarmRecordService;
 import com.java.system.service.SystemCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Mr.BH
@@ -30,6 +22,9 @@ public class SystemCommonSerivceImpl implements SystemCommonService {
 
     @Autowired
     private AlarmRecordMapper alarmRecordMapper;
+
+    @Autowired
+    private DictDataMapper dictDataMapper;
 
 
     @Override
@@ -57,6 +52,11 @@ public class SystemCommonSerivceImpl implements SystemCommonService {
     @Override
     public RestResult unbindOpenId(String openId) {
         return ResultUtils.success(alarmRecordMapper.unbindOpenId(openId));
+    }
+
+    @Override
+    public RestResult findDictByTypeCode(String typeCode) {
+        return ResultUtils.success(dictDataMapper.findByTypeCode(typeCode));
     }
 
 }
